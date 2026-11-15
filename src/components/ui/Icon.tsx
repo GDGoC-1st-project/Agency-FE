@@ -79,6 +79,8 @@ const ICONS = {
     ],
   },
   plus: { viewBox: 20, strokeWidth: 1.5, paths: ["M9.99804 4.16553V15.8296M4.16602 9.99755H15.8301"] },
+  /** "…" 더보기 (Figma 멤버 프로필 메뉴 버튼. Icon 세트에 없어 점 세 개로 그림) */
+  more: { viewBox: 20, strokeWidth: 2.4, paths: ["M5 10h.01M10 10h.01M15 10h.01"] },
   clock: {
     viewBox: 28,
     strokeWidth: 2.1,

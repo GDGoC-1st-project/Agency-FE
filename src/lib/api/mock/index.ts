@@ -13,7 +13,6 @@ import type {
   Department,
   MessageItem,
   Page,
-  ReasonType,
   RejectReasonType,
   ReportStatus,
   ReportTargetType,
@@ -39,20 +38,14 @@ import {
   type MockPost,
   type MockRequest,
 } from "./data";
+import { REASON_LABEL } from "@/lib/labels";
 
 type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 type Query = Record<string, string | number | boolean | null | undefined>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Body = any;
 
-const REASON_LABEL: Record<ReasonType, string> = {
-  PROJECT: "프로젝트",
-  STUDY: "스터디",
-  CONTEST: "해커톤·공모전",
-  COFFEE_CHAT: "커피챗",
-  HOBBY: "취미·관심사",
-  ETC: "기타",
-};
+// 제안 사유 이름은 화면과 같은 것을 씁니다.
 
 // ───────────────────────── 응답 도우미 ─────────────────────────
 

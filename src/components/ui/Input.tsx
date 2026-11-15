@@ -99,21 +99,30 @@ export function FormError({ message, className }: { message?: string | null; cla
   );
 }
 
-/** Figma Input/Search (모바일): 파란 그림자가 있는 검색창 */
+/**
+ * Figma Input/Search: 파란 그림자가 있는 검색창 (모바일 높이 53, PC 60).
+ * PC에서는 오른쪽에 "검색" 키 버튼이 보입니다 (form 안에서 submit).
+ */
 export function SearchInput({ className, ...rest }: Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
   return (
-    <label
+    <div
       className={cn(
-        "flex h-13.25 w-full items-center gap-3 border border-ink bg-paper px-4.5 shadow-search transition-colors hover:bg-hover focus-within:bg-white",
+        "flex h-13.25 w-full items-center gap-3 border border-ink bg-paper px-4.5 shadow-search transition-colors focus-within:bg-white hover:bg-hover lg:h-15",
         className,
       )}
     >
       <Icon name="search" className="shrink-0 text-ink" />
       <input
         type="search"
-        className="min-w-0 flex-1 bg-transparent text-14 leading-normal text-ink placeholder:text-ink outline-none"
+        className="min-w-0 flex-1 bg-transparent text-14 leading-normal text-ink outline-none placeholder:text-ink"
         {...rest}
       />
-    </label>
+      <button
+        type="submit"
+        className="hidden h-6.75 items-center rounded-sm border border-line bg-kbd px-2.25 text-10 text-muted hover:text-ink lg:inline-flex"
+      >
+        검색
+      </button>
+    </div>
   );
 }

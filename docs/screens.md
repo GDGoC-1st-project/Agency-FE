@@ -80,7 +80,9 @@
 
 ⚠️ 온보딩 중(승인 전)에는 **프로필 수정**과 **내 키워드 조회**를 부르면 403이 납니다. 키워드 편집기는 처음엔 빈 상태로 시작해야 합니다.
 
-✅ 구현됨 (2026-11-15): `/onboarding/profile`(1/3), `/onboarding/keywords`(2/3), `/pending`(3/3). 세 화면 모두 `OnboardingHeader`를 씁니다. **모바일만** — PC 버전(Figma 1:584 다이얼로그, 1:604, 1:614)은 아직이고, 그동안 1024px 이상에서는 `MobileColumn`으로 가운데 모바일 폭.
+✅ 구현됨 (2026-11-15): `/onboarding/profile`(1/3), `/onboarding/keywords`(2/3), `/pending`(3/3). 세 화면 모두 `OnboardingHeader`를 씁니다. 모바일·PC 모두.
+- PC 프로필 작성은 전용 화면이 없어서 Figma `Dialog/Profile Setup`(1:3656, 마이 위 다이얼로그) 카드를 가입 설정 헤더 아래 가운데에 놓았습니다(키워드 등록·승인 대기 PC와 같은 배치). 진행 막대는 1/3(33%), 카드의 데모 문구 대신 모바일 설명을 씁니다.
+- PC 키워드 등록(1:604)·승인 대기(1:614)는 Figma 문구를 따릅니다(모바일과 소개 문구가 다름). PC 승인 대기의 "승인 전에도 둘러볼 수 있어요"는 빼고 "승인 상태 확인"·"로그아웃"을 넣었습니다(4-3의 1번).
 - 프로필 작성: Figma 모바일(1:287)은 Flow header지만 가입 설정 단계라 Onboarding header로 바꿨습니다. 칸 순서는 Figma대로 이름(읽기 전용) → 한 줄 소개(100자) → 역할 → 전공 → 연락처.
 - 이미 프로필을 저장한 뒤 "이전"으로 돌아오면 승인 전에는 수정할 수 없어(프로필 수정 API는 승인 필요) 칸을 잠그고 안내만 보여줍니다.
 - 키워드 등록: 편집기는 `components/ui/KeywordEditor` (마이 › 내 키워드에서도 재사용). 같은 키워드를 다른 칸에 넣는 것은 허용(백엔드 명세), 같은 칸 중복은 막습니다. 키워드는 0개여도 저장할 수 있습니다(백엔드가 빈 배열 허용).
@@ -96,6 +98,13 @@
 | 📎 마이 (내 프로필) | **내 정보 조회** `GET /users/me`, **내 키워드 조회** `GET /users/me/keywords` |
 | 📎 프로필 수정 (승인 후) | **프로필 수정** `PATCH /users/me/profile` (온보딩의 프로필 폼 재사용) |
 | 📎 내 키워드 | **내 키워드 조회**, **키워드 검색**, **내 키워드 저장** (온보딩 키워드 편집기 재사용) |
+
+✅ 구현됨 (2026-11-15): `/members` (멤버 탐색 + 멤버 프로필 다이얼로그 + 같이해요 제안 다이얼로그), 모바일·PC 모두. 📎 마이 화면들은 아직.
+- 검색: 멤버 검색 API는 키워드로만 찾으므로 안내 문구를 "키워드로 검색해 보세요"로 바꿨습니다(Figma: 이름·역할·키워드). 입력을 멈추면 0.3초 뒤, Enter·PC "검색" 버튼은 바로 검색. `relation`은 디자인에 없어 쓰지 않습니다.
+- 다음 페이지가 있으면 목록 아래 "더 보기" (Figma에 없음, 20명 넘을 때 필요).
+- 멤버 프로필: "…" 메뉴의 **신고하기**는 신고 API에 사유(필수, 200자)가 필요해 다이얼로그 안에 사유 입력 화면을 넣었습니다. **차단하기**는 확인 후 차단하고 목록을 다시 불러옵니다(차단한 멤버는 목록에서 빠짐). 연락처는 API에 있지만 디자인에 없어 보여주지 않습니다.
+- 같이해요 제안: 제안 API에 `reasonType`(필수)이 있는데 디자인에 칸이 없어 **제안 사유 칩**(프로젝트·스터디·해커톤·공모전·커피챗·취미·관심사·기타)을 추가했습니다. 이미 연결됐거나 대기 중이면 `PROPOSAL409` 안내.
+- PC 다이얼로그는 Figma 배치대로 화면 오른쪽 가운데(오른쪽 여백 16px)에 폭 520으로 뜹니다.
 
 ### 5단계 · 모집글
 | 화면 | API |
@@ -208,8 +217,8 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 - **1024px(Tailwind `lg`) 이상에서 PC 디자인을 보여준다.** 그 미만은 모바일 디자인.
 - PC 공통 틀: 하단 내비 화면은 왼쪽 사이드바(248px) + 상단바(`AppShell`/`MainLayout`), 로그인·회원가입은 사이드바 없이 가운데 358px 열(`AuthLayout`).
 - 사이드바 "요청" 뱃지는 받은 요청 중 대기(PENDING) 개수, 프로필 바로가기의 진행률("프로필 80%")은 4-1의 9번 결정대로 넣지 않는다.
-- (이전 결정 "모바일 먼저, PC는 가운데 모바일 폭"은 폐기.) 이 결정 전에 모바일만 만든 화면(가입 설정 3개)은 PC 버전을 만들 때까지 `MobileColumn`으로 1024px 이상에서도 가운데 모바일 폭으로 보여준다.
-- 다이얼로그(`Dialog`)는 아직 모바일 시트 모양만 있다. PC 다이얼로그(Figma `Dialog/* Device=PC`)는 다이얼로그를 쓰는 화면을 만들 때 함께 만든다.
+- (이전 결정 "모바일 먼저, PC는 가운데 모바일 폭"은 폐기.) 임시로 쓰던 `MobileColumn`은 가입 설정 PC 버전을 만들며 없앴다.
+- 다이얼로그(`Dialog`)는 모바일은 아래 시트, PC는 오른쪽 가운데 520 카드(Figma `Dialog/* Device=PC` 배치).
 
 ---
 
@@ -250,12 +259,12 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Navigation/Bottom · Bottom Item | `components/layout/BottomNav` | 경로로 선택 표시 (`/members/3`도 멤버) |
 | Navigation/Flow Header | `components/layout/FlowHeader` | `backHref` 없으면 브라우저 뒤로 |
 | Navigation/Onboarding Header | `components/layout/OnboardingHeader` | `step`으로 "가입 설정 n/3" |
-| Dialog/* (Mobile) + Overlay/Scrim · Mobile | `components/layout/Dialog` | 아래에서 올라오는 시트, Esc·배경 클릭으로 닫힘 |
+| Dialog/* (Mobile·PC) + Overlay/Scrim | `components/layout/Dialog` | 모바일: 아래 시트 / PC: 오른쪽 가운데 520 카드. `visual`(배너·아이콘), `headerActions`(… 메뉴). Esc·배경 클릭으로 닫힘 |
+| (멤버 프로필 "…" 메뉴) | `ui/Menu`의 `MoreMenu` | 아이콘은 Figma Icon 세트에 없어 점 세 개(`more`)로 그림 |
 | Navigation/Sidebar · Sidebar Item · Profile Shortcut, Note/Daily (PC) | `components/layout/Sidebar` | 요청 뱃지 = 받은 요청 대기 개수, 진행률 없음 |
 | Navigation/Top Bar (PC) | `components/layout/PcTopBar` | 현재 메뉴 이름 + 한 줄 설명 |
 | (모바일 Top·Bottom + PC Sidebar·Top 묶음) | `components/layout/AppShell` (그리기만) / `MainLayout` (뱃지·이름을 불러옴) | 멤버·모집·요청·채팅·마이 화면 틀 |
 | PC · 계정 · 로그인/회원가입 틀 | `components/layout/AuthLayout` | 모바일 Flow header, PC 가운데 358px 열 |
-| (임시) | `components/layout/MobileColumn` | PC 버전이 아직 없는 화면을 1024px 이상에서 가운데 모바일 폭으로 |
 | Button/Primary · Secondary · Outline | `ui/Button` (`variant`) | 5절 통일 결과 적용 |
 | Button/Text Link | `ui/Button`의 `TextButton` | |
 | Button/Icon · Button/Icon Utility | `ui/Button`의 `IconButton` | `round`(닫기) / `plain`(뒤로) |
@@ -263,7 +272,8 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Input/Textarea, Field/Textarea | `ui/Input`의 `Textarea` | |
 | Input/Search | `ui/Input`의 `SearchInput` | |
 | Chip/Filter | `ui/Chip`의 `FilterChip` | |
-| Tag/Keyword | `ui/Chip`의 `KeywordTag` | 읽기 전용 `#React` |
+| Tag/Keyword | `ui/Chip`의 `KeywordTag` | 읽기 전용 `#React`. `size`: sm(카드) / md(프로필 다이얼로그) |
+| Card/Member | `app/members/MemberCard` (멤버 화면 전용) | 한 줄 소개·"연결 가능" 없음, 분야는 개발·AI·디자인 |
 | Keyword/Chip | `ui/Chip`의 `KeywordChip` | `onRemove`로 × 표시 |
 | Badge/Count | `ui/Badge`의 `CountBadge` | Badge/Status·Deadline은 4-3 결정으로 만들지 않음 |
 | Avatar(Small · Medium · Large) | `ui/Avatar` | `toneFor(id)`로 사람마다 같은 색 |

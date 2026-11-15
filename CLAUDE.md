@@ -17,7 +17,7 @@ frontend/
     │   ├── globals.css     # Tailwind 설정 + Figma 디자인 토큰(@theme)
     │   └── dev/            # 컴포넌트 모음 페이지 /dev (개발 모드에서만)
     ├── components/
-    │   ├── layout/         # 모바일: TopNav, BottomNav, FlowHeader, OnboardingHeader / PC: Sidebar, PcTopBar / 묶음: AppShell, MainLayout, AuthLayout, MobileColumn / Dialog
+    │   ├── layout/         # 모바일: TopNav, BottomNav, FlowHeader, OnboardingHeader / PC: Sidebar, PcTopBar / 묶음: AppShell, MainLayout, AuthLayout / Dialog(모바일 시트·PC 카드)
     │   └── ui/             # 공통 UI (Button, Input, Chip, Badge, Avatar, Card, Tabs, PageIntro, StateMessage, ProgressBar, Logo, Icon)
     ├── lib/
     │   ├── api/
@@ -113,7 +113,9 @@ frontend/
 - 화면별 Figma 노드 ID, 사용하는 API, 구현 순서도 `docs/screens.md`를 봅니다.
 - **화면은 모바일과 PC를 같이 만듭니다.** 화면 하나를 만들 때 `docs/screens.md` 1절의 모바일·PC 노드를 둘 다 읽고, 같은 주소에서 반응형으로 만듭니다. 1024px(`lg:`) 미만은 모바일, 이상은 PC 디자인입니다 (`docs/screens.md` 4-4).
 - 모바일 전용·PC 전용 요소는 `lg:hidden` / `hidden lg:flex`처럼 나눕니다. 같은 데이터·상태는 한 컴포넌트에서 쓰고 모양만 `lg:`로 바꾸는 것을 우선합니다.
-- PC 버전이 아직 없는 화면(가입 설정 3개)만 임시로 `MobileColumn`을 씁니다. PC 버전을 만들면 걷어냅니다.
+- 모바일과 PC의 문구·순서가 다르면 Figma를 각각 따릅니다 (예: `<span className="lg:hidden">다음</span><span className="hidden lg:inline">등록하고 계속하기</span>`, 순서는 `order-*`·`lg:order-*`).
+- 분야·제안 사유·거절 사유 같은 표시 이름은 `@/lib/labels`에서 가져옵니다.
+- 다이얼로그 열림 상태는 그 화면에서 `useResetOnHide(() => setOpen(false))`로 화면을 떠날 때 닫습니다. `useResetOnHide` 안에서는 처음 값으로 되돌리는 일만 합니다 (개발 모드 StrictMode에서 처음 그릴 때도 한 번 실행됨).
 
 ### 6. Figma 기준
 - Figma 파일: [인력사무소 디자인](https://www.figma.com/design/Q4ifVdq8v6VV66UaTYP3r9) (`Q4ifVdq8v6VV66UaTYP3r9`). 노드 ID는 `docs/screens.md`를 봅니다.

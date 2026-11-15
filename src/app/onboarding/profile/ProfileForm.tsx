@@ -5,7 +5,9 @@ import { useCallback, useEffect, useId, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormCard } from "@/components/ui/Card";
 import { FilterChip } from "@/components/ui/Chip";
-import { Field, FormError, Textarea, TextField } from "@/components/ui/Input";
+import { Field, FormError, Input, Textarea, TextField } from "@/components/ui/Input";
+import { Eyebrow } from "@/components/ui/PageIntro";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { ApiError, createProfile, getErrorMessage, getMe } from "@/lib/api";
 import { ROUTES } from "@/lib/routes";
@@ -14,6 +16,8 @@ import type { Department, MyInfoResponse } from "@/types/api";
 
 const DEPARTMENTS: Department[] = ["DEV", "AI", "DESIGN"];
 const BIO_MAX = 100;
+/** PC: 폭 520, 진한 테두리 + 9·10px 그림자 카드 (Figma Dialog/Profile Setup) */
+const PC_CARD = "lg:w-130 lg:border-ink lg:px-12 lg:py-12 lg:shadow-hard-lg";
 
 interface Values {
   bio: string;
@@ -37,6 +41,7 @@ export function ProfileForm() {
   const router = useRouter();
   const bioId = useId();
   const roleLabelId = useId();
+  const nameId = useId();
   const [me, setMe] = useState<MyInfoResponse | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [values, setValues] = useState<Values>({ bio: "", department: null, major: "", contact: "" });
@@ -108,7 +113,7 @@ export function ProfileForm() {
 
   if (!me) {
     return (
-      <FormCard tape={null}>
+      <FormCard tape={null} className={PC_CARD}>
         <p role="status" className="py-10 text-center text-12 text-muted">
           내 정보를 불러오는 중…
         </p>
@@ -123,15 +128,28 @@ export function ProfileForm() {
     setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
+  // 모바일(1:287)은 이름 → 한 줄 소개 → 역할 → 전공 → 연락처 한 줄씩,
+  // PC(Dialog/Profile Setup 1:3656)는 이름·전공 / 역할·연락처 두 칸 + 한 줄 소개. 순서는 order로 바꿉니다.
   return (
-    <FormCard tape={null}>
-      <form noValidate onSubmit={handleSubmit} aria-busy={submitting} className="flex flex-col gap-4">
-        <p className="flex gap-2 text-13 text-ink">
-          <span>이름</span>
-          <span>{me.name}</span>
-        </p>
+    <FormCard tape={null} className={PC_CARD}>
+      <div className="hidden pb-6 lg:block">
+        <Eyebrow>PROFILE SETUP</Eyebrow>
+        <h1 className="pt-2 font-display text-display-md text-ink">나를 소개하는 메모</h1>
+        <p className="pt-1 text-11 text-subtle">동료들이 나를 잘 알아볼 수 있도록 핵심 정보만 또렷하게 적어주세요.</p>
+        <ProgressBar value={33} label="가입 설정 1/3" className="mt-5" />
+      </div>
+      <form noValidate onSubmit={handleSubmit} aria-busy={submitting} className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-x-3.5">
+        <div className="order-1">
+          <p className="flex gap-2 text-13 text-ink lg:hidden">
+            <span>이름</span>
+            <span>{me.name}</span>
+          </p>
+          <Field label="이름" htmlFor={nameId} className="hidden lg:flex">
+            <Input id={nameId} size="dialog" readOnly value={me.name} className="bg-hover" />
+          </Field>
+        </div>
 
-        <Field label="한 줄 소개" htmlFor={bioId} error={errors.bio}>
+        <Field label="한 줄 소개" htmlFor={bioId} error={errors.bio} className="order-2 lg:order-5 lg:col-span-2">
           <Textarea
             id={bioId}
             size="auth"
@@ -142,13 +160,14 @@ export function ProfileForm() {
             onChange={(e) => set("bio", e.target.value)}
             aria-invalid={errors.bio ? true : undefined}
             aria-describedby={errors.bio ? `${bioId}-error` : undefined}
+            className="lg:h-23 lg:text-11 lg:leading-[16.5px]"
           />
           <span className="self-end text-10 text-muted">
             {values.bio.length}/{BIO_MAX}
           </span>
         </Field>
 
-        <div className="flex flex-col gap-1.75">
+        <div className="order-3 flex flex-col gap-1.75">
           <p id={roleLabelId} className="text-10 font-bold text-ink">
             역할
           </p>
@@ -169,6 +188,7 @@ export function ProfileForm() {
           value={values.major}
           onChange={(e) => set("major", e.target.value)}
           error={errors.major}
+          className="order-4 lg:order-2 lg:[&_input]:h-10.75 lg:[&_input]:text-11"
         />
         <TextField
           label="연락처"
@@ -177,15 +197,16 @@ export function ProfileForm() {
           value={values.contact}
           onChange={(e) => set("contact", e.target.value)}
           error={errors.contact}
+          className="order-5 lg:order-4 lg:[&_input]:h-10.75 lg:[&_input]:text-11"
         />
 
-        {alreadyWritten && (
-          <p className="text-11 text-muted">프로필은 이미 저장했어요. 승인 후 마이에서 수정할 수 있어요.</p>
-        )}
-        <FormError message={formError} />
-        <Button type="submit" fullWidth disabled={submitting} className="mt-2">
-          {submitting ? "저장하는 중…" : "다음: 키워드 등록"}
-        </Button>
+        <div className="order-6 flex flex-col gap-4 lg:col-span-2">
+          {alreadyWritten && <p className="text-11 text-muted">프로필은 이미 저장했어요. 승인 후 마이에서 수정할 수 있어요.</p>}
+          <FormError message={formError} />
+          <Button type="submit" fullWidth disabled={submitting} className="mt-2">
+            {submitting ? "저장하는 중…" : "다음: 키워드 등록"}
+          </Button>
+        </div>
       </form>
     </FormCard>
   );

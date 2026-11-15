@@ -31,7 +31,6 @@ const COLORS = [
   ["note", "bg-note"],
   ["paper", "bg-paper"],
   ["canvas", "bg-canvas"],
-  ["backdrop", "bg-backdrop"],
   ["line", "bg-line"],
   ["line-strong", "bg-line-strong"],
   ["hover", "bg-hover"],

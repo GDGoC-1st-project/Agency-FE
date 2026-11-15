@@ -104,7 +104,7 @@ export function KeywordEditor({ label, tone, value, onChange, disabled = false }
   const showList = open && trimmed.length > 0;
 
   return (
-    <section className={cn("p-5.5 shadow-paper", TONE_BG[tone])}>
+    <section className={cn("p-5.5 shadow-paper lg:p-6", TONE_BG[tone])}>
       <label htmlFor={inputId} className="block text-12 font-bold text-ink">
         {label}
         <span className="sr-only"> 키워드 추가</span>

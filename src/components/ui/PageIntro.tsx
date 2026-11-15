@@ -19,7 +19,9 @@ export function PageIntro({ eyebrow, title, description, variant = "main", class
   return (
     <header className={cn("flex flex-col", className)}>
       <p className="text-10 font-bold tracking-eyebrow text-eyebrow">{eyebrow}</p>
-      <h1 className={cn("pt-2 font-display text-ink", variant === "main" ? "text-display-xl" : "text-display-lg")}>{title}</h1>
+      <h1 className={cn("pt-2 font-display text-ink", variant === "main" ? "text-display-xl lg:text-display-2xl" : "text-display-lg")}>
+        {title}
+      </h1>
       {description && (
         <p className={cn("pt-3 text-muted", variant === "main" ? "text-14" : "text-13")}>{description}</p>
       )}

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 /**
  * 화면은 모바일과 PC를 함께 만듭니다 (docs/screens.md 4-4). 1024px(lg) 이상이 PC 디자인입니다.
- * PC 디자인이 아직 없는 화면은 그 화면에서 `MobileColumn`으로 감싸 모바일 폭으로 가운데 표시합니다.
+ * 화면마다 `lg:` 클래스로 모바일과 PC 모양을 나눕니다.
  */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

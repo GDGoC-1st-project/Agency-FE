@@ -15,10 +15,10 @@
   --color-note: #5c5b55; /* 카드 본문 */
   --color-paper: #fffef9; /* color/neutral/paper: 카드·헤더 바탕 */
   --color-canvas: #f5f5f1; /* color/neutral/canvas: 화면 바탕 */
-  --color-backdrop: #eeede7; /* 1024px 이상에서 모바일 화면 바깥 */
   --color-line: #deddd5; /* color/neutral/line: 옅은 테두리 */
   --color-line-strong: #cbc9bf; /* 입력창 테두리 */
   --color-hover: #f3f1e9; /* 호버 바탕 */
+  --color-kbd: #f1f0eb; /* PC 검색창 "검색" 키 */
   --color-yellow: #ffe66d; /* color/accent/yellow: 주요 버튼, 로고 */
   --color-yellow-soft: #fff5ae;
   --color-blue: #a9d6e5;
@@ -54,6 +54,12 @@
   --text-16--line-height: 24px;
 
   /* ── 제목 크기 (Black Han Sans, font-display와 함께 사용) ── */
+  --text-display-2xl: 64px; /* PC 페이지 제목 (Figma Page Intro PC: 줄 높이 71.5) */
+  --text-display-2xl--line-height: 71.5px;
+  --text-display-2xl--letter-spacing: -2.6px;
+  --text-display-pc: 36px; /* PC 가입 설정 카드 제목 */
+  --text-display-pc--line-height: 42.5px;
+  --text-display-pc--letter-spacing: -1.4px;
   --text-display-xl: 46.8px; /* 페이지 제목 (멤버·모집·요청 등) */
   --text-display-xl--line-height: 52.4px;
   --text-display-xl--letter-spacing: -2.1px;
@@ -94,19 +100,21 @@
   --shadow-dot: 0 2px 3px 0 rgb(0 0 0 / 0.25); /* 로고 점 */
 
   /* ── 폭 ── */
-  --container-mobile: 390px; /* 모바일 디자인 폭. PC 디자인이 아직 없는 화면을 1024px 이상에서 가운데 이 폭으로 표시 */
   --container-form: 358px; /* 로그인·회원가입 PC 가운데 열 */
   --spacing-sidebar: 248px; /* PC 사이드바 폭 (w-sidebar, pl-sidebar) */
 }
 
 @layer base {
   html {
-    background-color: var(--color-backdrop);
+    background-color: var(--color-canvas);
   }
 
   body {
     font-family: var(--font-sans);
     color: var(--color-ink);
     -webkit-font-smoothing: antialiased;
+    /* 한국어는 단어(띄어쓰기) 단위로 줄바꿈 — Figma와 같은 줄바꿈. 긴 URL 등은 넘치지 않게 끊음 */
+    word-break: keep-all;
+    overflow-wrap: anywhere;
   }
 }

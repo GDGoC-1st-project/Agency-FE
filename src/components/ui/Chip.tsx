@@ -21,10 +21,20 @@ export function FilterChip({ selected = false, type = "button", className, ...re
   );
 }
 
-/** Figma Tag/Keyword (모바일): 카드 안의 `#React` 같은 읽기 전용 키워드 */
-export function KeywordTag({ name, className }: { name: string; className?: string }) {
+/**
+ * Figma Tag/Keyword: 읽기 전용 키워드 `#React`.
+ * - sm: 카드 안 (높이 24, 글자 9)
+ * - md: 멤버 프로필 다이얼로그 (높이 33, 글자 11)
+ */
+export function KeywordTag({ name, size = "sm", className }: { name: string; size?: "sm" | "md"; className?: string }) {
   return (
-    <span className={cn("inline-flex h-6 items-center rounded-tag border border-ink bg-white/45 px-1.75 text-9 text-ink", className)}>
+    <span
+      className={cn(
+        "inline-flex items-center rounded-tag border border-ink bg-white/45 text-ink",
+        size === "md" ? "h-8.25 px-2.5 text-11" : "h-6 px-1.75 text-9",
+        className,
+      )}
+    >
       #{name}
     </span>
   );

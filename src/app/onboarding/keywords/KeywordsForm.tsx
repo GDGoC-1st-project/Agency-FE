@@ -42,17 +42,25 @@ export function KeywordsForm() {
   }
 
   return (
+    // 모바일: 세 칸 세로 + 버튼 반반 / PC(Figma 1:604): 세 칸 가로(간격 18) + 오른쪽 아래 버튼
     <div className="flex flex-col gap-5" aria-busy={saving}>
-      <KeywordEditor label="할 수 있는 것" tone="yellow" value={group.can} onChange={setRelation("can")} disabled={saving} />
-      <KeywordEditor label="배우고 싶은 것" tone="blue" value={group.learning} onChange={setRelation("learning")} disabled={saving} />
-      <KeywordEditor label="관심 있는 것" tone="green" value={group.interested} onChange={setRelation("interested")} disabled={saving} />
+      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-3 lg:items-start lg:gap-4.5">
+        <KeywordEditor label="할 수 있는 것" tone="yellow" value={group.can} onChange={setRelation("can")} disabled={saving} />
+        <KeywordEditor label="배우고 싶은 것" tone="blue" value={group.learning} onChange={setRelation("learning")} disabled={saving} />
+        <KeywordEditor label="관심 있는 것" tone="green" value={group.interested} onChange={setRelation("interested")} disabled={saving} />
+      </div>
       <FormError message={formError} />
-      <div className="flex gap-2.5 [&>*]:flex-1">
+      <div className="flex gap-2.5 [&>*]:flex-1 lg:justify-end lg:pt-2.5 lg:[&>*]:flex-none">
         <Button variant="secondary" disabled={saving} onClick={() => router.push(ROUTES.onboardingProfile)}>
           이전
         </Button>
         <Button disabled={saving} onClick={save}>
-          {saving ? "저장하는 중…" : "다음"}
+          {saving ? "저장하는 중…" : (
+            <>
+              <span className="lg:hidden">다음</span>
+              <span className="hidden lg:inline">등록하고 계속하기</span>
+            </>
+          )}
         </Button>
       </div>
     </div>
