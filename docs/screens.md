@@ -119,7 +119,7 @@
   - 남의 글: `hasApplied`가 false면 "함께하고 싶어요" → 모집글 지원, true면 "지원했어요"(누를 수 없음). `APPLICATION409`면 지원한 상태로 바꿈.
   - 내 글(`isAuthor`): 지원 버튼 대신 "삭제하기"(한 번 더 확인 화면) · "수정하기". Figma에 없는 버튼이라 기존 Secondary·Primary 버튼을 씁니다.
 - 작성: 모집 역할 칩(DEV/AI/DESIGN 여러 개, 1개 이상 필수)과 관련 키워드 편집기(`KeywordEditor`)를 넣었습니다. 제목은 50자 제한과 글자 수 표시. 올리면 목록을 다시 불러오고 새 글의 상세를 엽니다.
-- 수정: 작성 다이얼로그를 "EDIT RECRUIT NOTE / 모집 메모 고치기 / 수정 완료하기"로 열고 기존 값을 채웁니다. 상세 API는 키워드를 **이름으로만** 주므로, 키워드 검색으로 같은 이름을 찾아 `keywordIds`를 되살립니다(못 찾은 키워드는 빠지고 안내 문구 표시).
+- 수정: 작성 다이얼로그를 "EDIT RECRUIT NOTE / 모집 메모 고치기 / 수정 완료하기"로 열고 기존 값을 채웁니다. 상세 API는 키워드를 **이름으로만** 주므로, 키워드 검색으로 같은 이름을 찾아 `keywordIds`를 되살립니다(못 찾은 키워드는 빠지고 안내 문구 표시). 7절 알려진 문제 1번.
 
 ### 6단계 · 요청
 | 화면 | API |
@@ -130,6 +130,15 @@
 | (사이드바 요청 뱃지) | **받은 요청 목록** `status=PENDING` (`size=100`으로 받아 개수 표시. 총개수 필드는 없음) |
 
 ⚠️ `requestId`는 항상 `requestType`과 함께 다룹니다 (React key: `${requestType}-${requestId}`).
+
+✅ 구현됨 (2026-11-15): `/requests` (받은 요청 · 보낸 요청 탭 + 거절 사유 다이얼로그), 모바일·PC 모두.
+- 탭 숫자: 받은 요청은 사이드바 뱃지와 같은 값(받은 요청 대기 개수), 보낸 요청은 답을 기다리는 보낸 요청 개수.
+- 카드: Figma의 직무·키워드 태그는 요청 API에 없어 뺐습니다. 이름 옆에 요청 종류("같이 해요 · 프로젝트" / "모집 글 지원"), 본문은 제안 메시지 또는 "「모집 글 제목」 모집 글에 지원했어요."
+- 받은 요청: 목록은 상태 상관없이 최신순. 대기 중이면 "다음에"(거절 사유 다이얼로그) · "수락하기", 처리된 요청은 버튼 대신 "수락했어요"/"거절했어요".
+- 수락: 수락 API → 받은 `chatRoomId`로 `/chats/{chatRoomId}` 이동 (`ROUTES.chatRoom`, 채팅 화면은 7단계에서 만듦).
+- 거절 사유 다이얼로그: API가 사유 종류(`reasonType`)를 필수로 받아 Figma의 글 상자 위에 사유 칩(일정·방향·모집 종료·기타)을 추가했습니다. 글 상자는 "기타"일 때만 필수.
+- 수락·거절하면 사이드바 뱃지와 탭 숫자를 바로 하나 줄입니다 (`MainLayout`이 주는 `useRequestCount()`). 이미 처리된 요청(`REQUEST409`)이면 목록과 뱃지를 다시 불러옵니다.
+- 보낸 요청: 오른쪽(모바일은 아래)에 "응답 대기 중"/"수락됐어요"/"거절됐어요". 거절됐으면 본문 아래에 거절 사유와 상세를 보여줍니다. 모바일 보낸 요청 Figma(1:230)는 받은 요청을 그대로 복사한 상태라 PC(1:528) 모양을 따랐습니다.
 
 ### 7단계 · 채팅
 | 화면 | API |
@@ -289,7 +298,7 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Keyword/Chip | `ui/Chip`의 `KeywordChip` | `onRemove`로 × 표시 |
 | Badge/Count | `ui/Badge`의 `CountBadge` | Badge/Status·Deadline은 4-3 결정으로 만들지 않음 |
 | Avatar(Small · Medium · Large) | `ui/Avatar` | `toneFor(id)`로 사람마다 같은 색 |
-| Tab/Request | `ui/Tabs` | |
+| Tab/Request | `ui/Tabs` | 모바일은 반씩, PC는 탭마다 150px |
 | Card/Member · Card/Recruit 바탕, Decor/Tape | `ui/Card`의 `NoteCard`, `Tape`, `noteToneAt` | 카드 내용은 화면에서 조립 |
 | Card/Request | `ui/Card`의 `BoxCard` | |
 | Card/Management Link · Card/Admin Action | `ui/Card`의 `LinkCard` | |
@@ -300,3 +309,13 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Icon (+ 아바타·하단 내비 아이콘) | `ui/Icon` | Figma에서 내보낸 SVG 경로, 색은 `text-*` |
 
 디자인 토큰(색·글꼴·글자 크기·그림자·폭)은 `src/app/globals.css`의 `@theme`에 있습니다. 예: `bg-paper`, `text-muted`, `text-11`, `font-display text-display-xl`, `shadow-hard`, `max-w-mobile`.
+
+---
+
+## 7. 알려진 문제
+
+백엔드가 바뀌면 없앨 수 있는 임시 처리입니다.
+
+| # | 화면 | 문제 | 지금 처리 | 해결 방법 |
+| --- | --- | --- | --- | --- |
+| 1 | 모집 글 수정 (5단계) | 모집글 상세 API(`GET /posts/{postId}`)가 키워드를 **이름으로만**(`keywords: string[]`) 줘서, 수정 API에 보낼 `keywordIds`를 바로 알 수 없음 | 수정 다이얼로그를 열 때 키워드 검색 API로 이름이 똑같은 키워드를 찾아 id를 되살림 (`RecruitComposeDialog`의 `resolveKeywords`). 키워드마다 검색을 한 번씩 부르고, 못 찾은 키워드는 빠지며 안내 문구를 보여줌 | 백엔드가 상세 응답에 키워드 id를 같이 주면(예: `keywords: { keywordId, name }[]`) 그 값을 바로 채우고 다시 찾는 코드를 지움 |

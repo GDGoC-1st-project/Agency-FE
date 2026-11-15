@@ -16,7 +16,7 @@ interface TabsProps<T extends string> {
   className?: string;
 }
 
-/** Figma Tab/Request (모바일): 받은 요청 / 보낸 요청 */
+/** Figma Tab/Request: 받은 요청 / 보낸 요청. 모바일은 반씩 나누고, PC는 탭마다 150px */
 export function Tabs<T extends string>({ items, value, onChange, label, className }: TabsProps<T>) {
   return (
     <div role="tablist" aria-label={label} className={cn("flex border-b border-line", className)}>
@@ -30,7 +30,7 @@ export function Tabs<T extends string>({ items, value, onChange, label, classNam
             aria-selected={selected}
             onClick={() => onChange(item.value)}
             className={cn(
-              "-mb-px flex h-13.75 flex-1 items-center justify-center gap-1.5 border-b-2 text-12 transition-colors hover:bg-hover",
+              "-mb-px flex h-13.75 flex-1 items-center justify-center lg:w-37.5 lg:flex-none gap-1.5 border-b-2 text-12 transition-colors hover:bg-hover",
               selected ? "border-ink font-bold text-ink" : "border-transparent text-muted",
             )}
           >

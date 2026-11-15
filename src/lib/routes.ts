@@ -11,6 +11,8 @@ export const ROUTES = {
   recruits: "/recruits",
   requests: "/requests",
   chats: "/chats",
+  /** 채팅방 (7단계 채팅 화면에서 만듭니다) */
+  chatRoom: (chatRoomId: number) => `/chats/${chatRoomId}`,
   my: "/my",
 } as const;
 
