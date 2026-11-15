@@ -2,18 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { getAccessToken } from "@/lib/auth/token";
-import { ROUTES } from "@/lib/routes";
+import { resolveHomePath } from "@/lib/auth/home";
 
 /**
  * 토큰은 브라우저(localStorage)에만 있으므로 브라우저에서 확인한 뒤 이동합니다.
- * 토큰이 만료됐으면 멤버 화면의 첫 API 호출에서 공통 함수가 재발급하거나 로그인으로 보냅니다.
+ * 로그인했으면 가입 단계에 맞는 화면(프로필 작성 · 키워드 등록 · 승인 대기 · 멤버), 아니면 로그인 (`resolveHomePath`).
  */
 export function RootRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace(getAccessToken() ? ROUTES.members : ROUTES.login);
+    let cancelled = false;
+    void resolveHomePath().then((path) => !cancelled && router.replace(path));
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   return (

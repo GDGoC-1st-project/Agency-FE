@@ -36,7 +36,8 @@ frontend/
     │   │   ├── chat.ts         # getChatRooms, getChatRoom, getMessages, sendMessage, markAsRead, connectChatSocket
     │   │   ├── admin.ts        # getAdminDashboard, getPendingSignups, approveSignup, getAdminReports, resolveReport
     │   │   └── mock/           # 가짜 데이터 모드 (index.ts: 가짜 응답 라우트, data.ts: 초기 데이터)
-    │   ├── auth/token.ts   # accessToken / refreshToken 저장·삭제, logout (토큰 지우고 로그인 화면으로)
+    │   ├── auth/token.ts   # accessToken / refreshToken · 가입 단계(onboardingStep) 저장·삭제, logout (토큰 지우고 로그인 화면으로)
+    │   ├── auth/home.ts    # resolveHomePath: 로그인한 사용자가 갈 화면 (가입 단계별 프로필 작성·키워드 등록·승인 대기·멤버)
     │   ├── routes.ts       # 화면 경로 상수 (ROUTES)
     │   ├── datetime.ts     # API 날짜 → "오후 2:14" · "어제" · "오늘" 같은 화면 문구
     │   └── cn.ts           # className 합치기
@@ -67,7 +68,7 @@ frontend/
 - 화면에서 `apiRequest`·`api.get` 등을 직접 부르거나 URL 문자열을 쓰지 않습니다. `fetch`, axios도 쓰지 않습니다.
 - 새 API가 생기면 해당 기능 파일(`src/lib/api/*.ts`)에 함수를 추가하고, 그 안에서만 `client.ts`의 `api.*`를 씁니다. 새 기능 파일을 만들면 `index.ts`에 re-export를 추가합니다.
 - `signup`·`login`은 성공 시 토큰을 자동 저장하므로 화면에서 따로 저장하지 않습니다.
-- 공통 함수가 토큰 첨부, `AUTH401` 재발급 후 재시도, `REFRESH401` → `/login`, `AUTH403` → `/pending` 이동을 처리합니다. 화면에서 이 처리를 다시 구현하지 않습니다.
+- 공통 함수가 토큰 첨부, `AUTH401` 재발급 후 재시도, `REFRESH401` → `/login`, `AUTH403` → 가입 단계에 맞는 화면(프로필 작성·키워드 등록·승인 대기) 이동을 처리합니다. 화면에서 이 처리를 다시 구현하지 않습니다.
 - 그 외 실패는 `ApiError`(`status`, `code`, `message`)로 throw되므로 화면에서 `code`로 분기합니다.
 - 오류 문구는 `getErrorMessage(error, 기본문구)`로 만듭니다 (서버 메시지 / 연결 실패 안내). 입력칸 하나의 문제는 `TextField`·`Field`의 `error`로 칸 아래에, 양식 전체 문제는 `FormError`로 보여줍니다.
 - 요청 중에는 버튼을 `disabled`로 하고 문구를 "…하는 중…"으로 바꿉니다 (`/login`·`/signup` 참고).
@@ -77,7 +78,7 @@ frontend/
 - 채팅 실시간 수신(WebSocket)도 `new WebSocket`을 직접 쓰지 말고 `connectChatSocket(chatRoomId, onEvent)`를 씁니다. 반환된 함수로 연결을 닫습니다(useEffect cleanup).
 
 ### 4. 승인 전(PENDING) 사용자는 승인 전 API만 호출
-승인 전 사용자가 그 외 API를 부르면 `403 AUTH403`이 나고 `/pending`으로 튕깁니다. 온보딩·승인 대기 화면에서는 아래 8개만 호출합니다.
+승인 전 사용자가 그 외 API를 부르면 `403 AUTH403`이 나고 가입 단계에 맞는 화면(프로필 작성·키워드 등록·승인 대기)으로 튕깁니다. 온보딩·승인 대기 화면에서는 아래 8개만 호출합니다.
 
 | 기능 | 함수 | 요청 |
 | --- | --- | --- |
@@ -101,7 +102,7 @@ frontend/
   - 로그인은 항상 성공하고 **승인된 일반 사용자**(강민지, `role=MEMBER`, `onboardingStep=DONE`)로 처리합니다. 아이디를 **`admin`**으로 로그인하면 같은 사용자가 **운영진(`role=ADMIN`)**이 되어 마이의 "운영 관리"와 `/admin` 화면을 볼 수 있습니다.
   - 회원가입은 초대 코드 `GDGOC-INVITE-01`~`05`만 받습니다 (그 외 `INVITE400`, 아이디 `admin`은 `AUTH409`). 가입하면 프로필·키워드가 빈 **승인 대기(PENDING)** 사용자로 시작하고, 승인 상태 조회는 **두 번째 확인부터 `APPROVED`**입니다. 그래서 회원가입 → 프로필 작성 → 키워드 등록 → 승인 대기 → 멤버까지 이어서 눌러볼 수 있습니다.
   - 승인 대기 중에는 승인 전 API 8개 외에는 실제처럼 `AUTH403`이 납니다.
-  - 로그인 사용자 정보(이름·프로필·키워드·승인 상태)만 sessionStorage(`mock:me`)에 저장돼 새로고침해도 이어집니다. 처음부터 다시 하려면 로그인하거나 탭을 새로 여세요.
+  - 로그인 사용자 정보(이름·프로필·키워드·승인 상태·역할)만 localStorage(`mock:me`)에 저장돼 새로고침하거나 창을 닫았다 다시 열어도 이어집니다(실제 서버처럼). 처음 상태로 돌리려면 다시 로그인하세요.
   - 응답 형식과 에러 코드는 `docs/api-list.md`·백엔드와 같습니다 (예: 같은 글에 두 번 지원하면 `APPLICATION409`).
   - 작성·수락·삭제 등은 메모리에 반영되지만 **새로고침하면 처음 데이터로 돌아갑니다.**
   - 채팅은 메시지를 보내면 잠시 뒤 상대의 읽음(`message.read`)과 자동 답장(`message.new`)이 WebSocket 이벤트로 옵니다.

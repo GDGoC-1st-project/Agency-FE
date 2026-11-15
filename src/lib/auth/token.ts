@@ -1,7 +1,10 @@
 import { ROUTES } from "@/lib/routes";
+import type { OnboardingStep } from "@/types/api";
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
+const ONBOARDING_STEP_KEY = "onboardingStep";
+const STEPS: OnboardingStep[] = ["PROFILE", "KEYWORD", "WAITING", "DONE"];
 
 const isBrowser = () => typeof window !== "undefined";
 
@@ -33,6 +36,25 @@ export function clearTokens() {
   if (!isBrowser()) return;
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
+  window.localStorage.removeItem(ONBOARDING_STEP_KEY);
+}
+
+/**
+ * 마지막으로 알고 있는 가입 단계 (로그인 응답의 onboardingStep).
+ * 로그인·회원가입·프로필 작성·키워드 저장·승인 확인 때 `@/lib/api` 함수들이 갱신합니다. 모르면 null.
+ */
+export function getOnboardingStep(): OnboardingStep | null {
+  const value = read(ONBOARDING_STEP_KEY);
+  return STEPS.includes(value as OnboardingStep) ? (value as OnboardingStep) : null;
+}
+
+export function setOnboardingStep(step: OnboardingStep) {
+  if (!isBrowser()) return;
+  try {
+    window.localStorage.setItem(ONBOARDING_STEP_KEY, step);
+  } catch {
+    // 저장소를 못 쓰면 다음에 승인 전 API로 다시 알아냅니다.
+  }
 }
 
 /**

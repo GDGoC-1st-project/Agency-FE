@@ -6,7 +6,7 @@ import { RedirectIfLoggedIn } from "./RedirectIfLoggedIn";
  * 로그인·회원가입 화면 틀.
  * - 모바일(Figma 1:343, 1:328): Flow header + 본문
  * - PC(Figma 1:621, 1:628): 헤더·사이드바 없이 358px 열을 화면 가운데에
- * 이미 로그인한 사람이 들어오면 멤버 화면으로 보냅니다 (RedirectIfLoggedIn).
+ * 이미 로그인한 사람이 들어오면 가입 단계에 맞는 화면으로 보냅니다 (RedirectIfLoggedIn).
  */
 export function AuthLayout({ title, children }: { title: string; children: ReactNode }) {
   return (

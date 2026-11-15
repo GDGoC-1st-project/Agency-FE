@@ -74,6 +74,23 @@ function goToLogin() {
   redirectTo(ROUTES.login);
 }
 
+/**
+ * 승인 전 API가 아닌 것을 불렀다가 AUTH403이 났을 때: 가입 단계에 맞는 화면으로 보냅니다 (`@/lib/auth/home`).
+ * home.ts가 이 파일을 쓰는 API 함수들을 불러오므로 서로 맞물리지 않게 필요할 때 불러옵니다.
+ * 여러 요청이 동시에 403이어도 이동은 한 번만 합니다.
+ */
+let onboardingRedirect: Promise<void> | null = null;
+function goToOnboardingStep() {
+  if (typeof window === "undefined" || onboardingRedirect) return;
+  onboardingRedirect = import("@/lib/auth/home")
+    .then(({ resolveHomePath }) => resolveHomePath({ notApproved: true }))
+    .catch(() => ROUTES.pendingApproval)
+    .then((path) => redirectTo(path))
+    .finally(() => {
+      onboardingRedirect = null;
+    });
+}
+
 // 동시에 여러 요청이 AUTH401을 받아도 재발급은 한 번만 합니다.
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -135,7 +152,7 @@ async function send<T>(path: string, options: ApiRequestOptions): Promise<{ stat
  *
  * - AUTH401    → refresh로 토큰 재발급 후 한 번 재시도
  * - REFRESH401 → 토큰 삭제 후 로그인 화면으로 이동
- * - AUTH403    → 승인 대기 화면으로 이동
+ * - AUTH403    → 승인 전이므로 가입 단계에 맞는 화면(프로필 작성 · 키워드 등록 · 승인 대기)으로 이동
  * - 그 외 실패 → ApiError throw
  */
 export async function apiRequest<T = void>(path: string, options: ApiRequestOptions = {}): Promise<T> {
@@ -161,7 +178,7 @@ export async function apiRequest<T = void>(path: string, options: ApiRequestOpti
   if (data.code === "REFRESH401") {
     goToLogin();
   } else if (data.code === "AUTH403") {
-    redirectTo(ROUTES.pendingApproval);
+    goToOnboardingStep();
   }
 
   throw new ApiError(status, data.code, data.message);

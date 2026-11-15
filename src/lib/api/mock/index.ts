@@ -180,7 +180,8 @@ const INVITE_NAMES: Record<string, string> = {
 };
 
 // ───────────────────────── 나(로그인 사용자) 상태 ─────────────────────────
-// 회원가입 → 온보딩 → 승인 대기 흐름을 새로고침해도 이어서 볼 수 있도록 sessionStorage에 저장합니다.
+// 회원가입 → 온보딩 → 승인 대기 흐름을 새로고침하거나 창을 닫았다 다시 열어도 이어서 볼 수 있도록 localStorage에 저장합니다
+// (실제 서버가 계정 상태를 기억하는 것처럼). 로그인하면 처음 상태로 돌아갑니다.
 
 const ME_STORAGE_KEY = "mock:me";
 const SEED_ME = structuredClone(findUser(ME_ID)!);
@@ -190,7 +191,7 @@ const meState: { status: UserStatus; approvalChecks: number; role: Role } = { st
 function saveMe() {
   if (typeof window === "undefined") return;
   try {
-    window.sessionStorage.setItem(ME_STORAGE_KEY, JSON.stringify({ user: findUser(ME_ID), state: meState }));
+    window.localStorage.setItem(ME_STORAGE_KEY, JSON.stringify({ user: findUser(ME_ID), state: meState }));
   } catch {
     // 저장소를 못 쓰면 메모리에만 둡니다.
   }
@@ -199,7 +200,7 @@ function saveMe() {
 function loadMe() {
   if (typeof window === "undefined") return;
   try {
-    const raw = window.sessionStorage.getItem(ME_STORAGE_KEY);
+    const raw = window.localStorage.getItem(ME_STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw) as { user: object; state: typeof meState };
     Object.assign(findUser(ME_ID)!, saved.user);

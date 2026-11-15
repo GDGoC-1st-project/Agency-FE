@@ -63,8 +63,11 @@
 로그인 후 이동: `onboardingStep`이 `PROFILE` → 프로필 작성, `KEYWORD` → 키워드 등록, `WAITING` → 승인 대기, `DONE` → 멤버 탐색.
 
 ✅ 구현됨 (2026-11-15): `/login`, `/signup`, `/`(로그인되어 있으면 `/members`, 아니면 `/login`). 모바일·PC 모두 (PC는 헤더 없이 가운데 358px 열, PC 회원가입에도 "이미 계정이 있나요? 로그인" 링크를 둠 — 4-2의 ⑨).
-- 이미 로그인한(토큰이 있는) 사람이 `/login`·`/signup`에 들어오면 `/members`로 보냅니다(`AuthLayout`의 `RedirectIfLoggedIn`). 승인 전 사용자는 멤버 화면의 첫 API에서 승인 대기로 다시 보내집니다.
-- 없는 주소는 공통 404 화면(`ui/NotFound`, `app/not-found.tsx`)을 보여주고 "처음으로 가기"는 `/`로 갑니다.
+- **로그인한 사용자가 갈 화면은 `resolveHomePath`(`@/lib/auth/home`) 하나로 정합니다.** 가입 단계(`onboardingStep`)가 PROFILE → 프로필 작성, KEYWORD → 키워드 등록, WAITING → 승인 대기, DONE → 멤버, 토큰 없으면 로그인. 쓰는 곳: `/`(RootRedirect), `/login`·`/signup`(`AuthLayout`의 `RedirectIfLoggedIn`), 404의 "처음으로 가기"(`ui/HomeButton`), 공통 API 함수의 `AUTH403`.
+  - 가입 단계는 localStorage(`onboardingStep`)에 저장해 둡니다. 로그인(응답의 `onboardingStep`)·회원가입(PROFILE)·프로필 작성(KEYWORD)·가입 중 키워드 저장(WAITING)·승인 확인 APPROVED(DONE) 때 `@/lib/api` 함수가 갱신하고, 로그아웃하면 지웁니다.
+  - PROFILE이거나 값을 모르면 승인 전에도 되는 API로 확인합니다: 내 정보 조회의 전공(major)이 없으면 PROFILE, 값이 없으면 승인 상태 조회로 APPROVED면 DONE. 프로필은 있는데 키워드를 저장했는지는 승인 전 API로 알 수 없어서(내 키워드 조회는 승인 후만) 모르면 KEYWORD로 보냅니다.
+  - `AUTH403`(승인 전인데 승인 필요 API 호출)이면 DONE으로는 보내지 않습니다.
+- 없는 주소는 공통 404 화면(`ui/NotFound`, `app/not-found.tsx`)을 보여주고 "처음으로 가기"는 `resolveHomePath`로 갈 곳을 정합니다.
 - 이동 경로는 `lib/routes.ts`의 `pathForOnboardingStep`. 회원가입 성공 후에는 항상 프로필 작성(`/onboarding/profile`)으로 갑니다.
 - 아직 없는 화면 주소: `/members` (지금은 404).
 - Figma 회원가입은 "가입하기" 버튼이 초대 코드 칸에 붙어 있지만, 로그인과 같게 24px 띄웠습니다.
@@ -338,7 +341,7 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Card/Request | `ui/Card`의 `BoxCard` | |
 | Chat/List Panel · List Item · Header · Bubble · Date Divider · Composer | `app/chats`의 `ChatList`, `ChatRoom` (채팅 화면 전용) | 첨부(+) 버튼 없음 (4-1의 10번) |
 | Card/Management Link · Card/Admin Action | `ui/Card`의 `LinkCard` | `icon` = Management Link(마이), `count` = Admin Action(운영 관리, 숫자 원). `href` 대신 `onClick`을 주면 버튼(마이의 로그아웃) |
-| (Figma에 없음) 404 화면 | `ui/NotFound` (`app/not-found.tsx`가 사용) | 로고 · "404" · "찾는 화면이 없어요" · "처음으로 가기"(→ `/`) |
+| (Figma에 없음) 404 화면 | `ui/NotFound` (`app/not-found.tsx`가 사용) | 로고 · "404" · "찾는 화면이 없어요" · "처음으로 가기"(`ui/HomeButton` → `resolveHomePath`) |
 | Dialog/Profile Setup · 마이 · 프로필 관리 양식 | `ui/ProfileForm` | `mode`: onboarding(작성) / edit(수정), `frame`: card / plain(다이얼로그 안) |
 | Keyword/Category 세 칸 + 저장 | `ui/KeywordsForm` (칸 하나는 `ui/KeywordEditor`) | `mode`: onboarding(빈 칸) / edit(내 키워드 불러와 채움) |
 | Page Intro · Intro/Flow | `ui/PageIntro` (`variant` main / flow) | |
