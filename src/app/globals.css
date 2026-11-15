@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Figma 디자인 토큰 (인력사무소 디자인 · 조립 화면 기준)
+ * - 색: Figma 변수 color/* + 조립 화면에서 쓰인 색
+ * - 글자: 본문 Noto Sans KR, 제목·숫자 Black Han Sans (layout.tsx에서 next/font로 불러옴)
+ * - 간격은 Tailwind 기본(4px 단위, 0.25 단위 소수 가능: 13px = 3.25)을 그대로 씁니다.
+ */
+@theme {
+  /* ── 색 ── */
+  --color-ink: #292822; /* color/neutral/ink: 기본 글자, 진한 테두리 */
+  --color-muted: #74736c; /* color/neutral/muted: 보조 글자, 비활성 아이콘 */
+  --color-subtle: #64635c; /* 설명 문구 */
+  --color-eyebrow: #69685f; /* 영문 소제목 (MEMBER BOARD 등) */
+  --color-note: #5c5b55; /* 카드 본문 */
+  --color-paper: #fffef9; /* color/neutral/paper: 카드·헤더 바탕 */
+  --color-canvas: #f5f5f1; /* color/neutral/canvas: 화면 바탕 */
+  --color-backdrop: #eeede7; /* 1024px 이상에서 모바일 화면 바깥 */
+  --color-line: #deddd5; /* color/neutral/line: 옅은 테두리 */
+  --color-line-strong: #cbc9bf; /* 입력창 테두리 */
+  --color-hover: #f3f1e9; /* 호버 바탕 */
+  --color-yellow: #ffe66d; /* color/accent/yellow: 주요 버튼, 로고 */
+  --color-yellow-soft: #fff5ae;
+  --color-blue: #a9d6e5;
+  --color-blue-soft: #d4ecf3;
+  --color-pink: #ffb3c6;
+  --color-pink-soft: #ffd2dd;
+  --color-green: #b8e986;
+  --color-green-soft: #d9f4bd;
+  --color-red: #e95f63; /* 로고 점 */
+  --color-danger: #d94c4c; /* 오류 상태 */
+
+  /* ── 글꼴 ── */
+  --font-sans: var(--font-noto-sans-kr), "Noto Sans KR", system-ui, sans-serif;
+  --font-display: var(--font-black-han-sans), "Black Han Sans", var(--font-noto-sans-kr), sans-serif;
+
+  /* ── 글자 크기 (Noto Sans KR, 이름 = px) ── */
+  --text-9: 9px;
+  --text-9--line-height: 13.5px;
+  --text-10: 10px;
+  --text-10--line-height: 15px;
+  --text-11: 11px;
+  --text-11--line-height: 16.5px;
+  --text-12: 12px;
+  --text-12--line-height: 18px;
+  --text-13: 13px;
+  --text-13--line-height: 22.8px;
+  --text-14: 14px;
+  --text-14--line-height: 25.2px;
+  --text-15: 15px;
+  --text-15--line-height: 22.5px;
+  --text-16: 16px;
+  --text-16--line-height: 24px;
+
+  /* ── 제목 크기 (Black Han Sans, font-display와 함께 사용) ── */
+  --text-display-xl: 46.8px; /* 페이지 제목 (멤버·모집·요청 등) */
+  --text-display-xl--line-height: 52.4px;
+  --text-display-xl--letter-spacing: -2.1px;
+  --text-display-lg: 39px; /* 흐름 화면 제목 (회원가입·로그인 등) */
+  --text-display-lg--line-height: 44.5px;
+  --text-display-lg--letter-spacing: -1.6px;
+  --text-display-md: 29px; /* 다이얼로그 제목 */
+  --text-display-md--line-height: 37.7px;
+  --text-display-md--letter-spacing: -1px;
+  --text-display-sm: 23px; /* 카드 이름 */
+  --text-display-sm--line-height: 34.5px;
+  --text-display-sm--letter-spacing: -0.7px;
+  --text-display-xs: 22px; /* 모집 카드 제목 */
+  --text-display-xs--line-height: 29.7px;
+  --text-display-xs--letter-spacing: -0.8px;
+  --text-display-2xs: 18px; /* 링크 카드 제목 */
+  --text-display-2xs--line-height: 27px;
+  --text-logo: 17px;
+  --text-logo--line-height: 25.5px;
+  --text-logo--letter-spacing: -0.5px;
+
+  /* ── 자간 ── */
+  --tracking-eyebrow: 1.5px;
+  --tracking-step: 0.8px;
+
+  /* ── 모서리 ── */
+  --radius-tag: 3px;
+
+  /* ── 그림자 ── */
+  --shadow-hard: 4px 4px 0 0 var(--color-ink); /* 주요 버튼 */
+  --shadow-hard-md: 3px 3px 0 0 var(--color-ink); /* 요청 카드, 온보딩 로고 */
+  --shadow-hard-sm: 2px 2px 0 0 var(--color-ink); /* 상단 로고 */
+  --shadow-paper: 0 2px 4px 0 rgb(48 45 34 / 0.06), 0 12px 30px 0 rgb(48 45 34 / 0.09); /* 메모 카드 */
+  --shadow-search: 5px 6px 0 0 var(--color-blue); /* 검색창 */
+  --shadow-sheet: 0 -6px 0 0 var(--color-ink); /* 모바일 다이얼로그 */
+  --shadow-dot: 0 2px 3px 0 rgb(0 0 0 / 0.25); /* 로고 점 */
+
+  /* ── 폭 ── */
+  --container-mobile: 390px; /* 모바일 디자인 폭. 1024px 이상에서 이 폭으로 가운데 표시 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    background-color: var(--color-backdrop);
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
 }

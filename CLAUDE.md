@@ -12,8 +12,11 @@ frontend/
 ├── docs/screens.md         # 화면 목록, Figma 노드, 사용 API, 구현 순서, 결정 사항
 └── src/
     ├── app/                # 라우트(화면). App Router 규칙을 따름
+    │   ├── globals.css     # Tailwind 설정 + Figma 디자인 토큰(@theme)
+    │   └── dev/            # 컴포넌트 모음 페이지 /dev (개발 모드에서만)
     ├── components/
-    │   └── ui/             # 공통 UI 컴포넌트 (Button, Input, Modal 등)
+    │   ├── layout/         # TopNav, BottomNav, FlowHeader, OnboardingHeader, Dialog, MainLayout
+    │   └── ui/             # 공통 UI (Button, Input, Chip, Badge, Avatar, Card, Tabs, PageIntro, StateMessage, ProgressBar, Logo, Icon)
     ├── lib/
     │   ├── api/
     │   │   ├── client.ts   # 공통 호출 함수 (apiRequest, api). 기능별 파일 내부에서만 사용
@@ -31,7 +34,9 @@ frontend/
     │   │   ├── chat.ts         # getChatRooms, getChatRoom, getMessages, sendMessage, markAsRead, connectChatSocket
     │   │   ├── admin.ts        # getAdminDashboard, getPendingSignups, approveSignup, getAdminReports, resolveReport
     │   │   └── mock/           # 가짜 데이터 모드 (index.ts: 가짜 응답 라우트, data.ts: 초기 데이터)
-    │   └── auth/token.ts   # accessToken / refreshToken 저장·삭제
+    │   ├── auth/token.ts   # accessToken / refreshToken 저장·삭제
+    │   ├── routes.ts       # 화면 경로 상수 (ROUTES)
+    │   └── cn.ts           # className 합치기
     └── types/api.ts        # api-list.md 기준 요청·응답 타입
 ```
 
@@ -43,6 +48,11 @@ frontend/
 ### 1. 공통 컴포넌트는 `components/ui`에 두고 재사용
 - 버튼, 입력창, 카드, 모달, 태그, 빈 상태 등 반복되는 UI는 `src/components/ui`에 만듭니다.
 - 새로 만들기 전에 `components/ui`에 같은 역할의 컴포넌트가 있는지 먼저 확인하고, 있으면 그것을 쓰거나 props를 확장합니다. 비슷한 컴포넌트를 중복해서 만들지 않습니다.
+- 화면 틀은 `components/layout`을 씁니다. 하단 내비가 있는 화면은 `MainLayout`, 계정·마이 하위·운영 화면은 `FlowHeader`, 가입 설정은 `OnboardingHeader`, 다이얼로그는 `Dialog`.
+- Figma 컴포넌트와 코드의 대응표는 `docs/screens.md` 6절, 실제 모양은 개발 서버의 `/dev`에서 봅니다. 공통 컴포넌트를 추가·변경하면 `/dev`(`src/app/dev/DevCatalog.tsx`)에도 반영합니다.
+- 색·글자 크기·그림자는 `globals.css`의 토큰(`bg-paper`, `text-11`, `font-display text-display-xl`, `shadow-hard` 등)을 쓰고 hex 값을 직접 쓰지 않습니다.
+- 아이콘은 `ui/Icon`만 씁니다. 새 아이콘은 Figma에서 SVG를 내보내 `ICONS`에 경로를 추가합니다.
+- 경로 문자열은 `@/lib/routes`의 `ROUTES`를 씁니다.
 
 ### 2. 스타일은 Tailwind만
 - Tailwind 유틸리티 클래스만 씁니다.
@@ -96,6 +106,7 @@ frontend/
 - **모바일 디자인을 먼저 구현합니다.** 1024px 이상 화면에서는 모바일 화면을 가운데에 모바일 폭(390px)으로 보여주고, PC 레이아웃은 나중에 합니다 (`docs/screens.md` 4-4).
 
 ### 6. Figma 기준
+- Figma 파일: [인력사무소 디자인](https://www.figma.com/design/Q4ifVdq8v6VV66UaTYP3r9) (`Q4ifVdq8v6VV66UaTYP3r9`). 노드 ID는 `docs/screens.md`를 봅니다.
 - 디자인 시스템 페이지의 **컴포넌트 섹션과 조립 화면이 다르면 조립 화면을 따릅니다.**
 - 공통 컴포넌트(`components/ui`)는 **조립 화면에서 실제로 쓰인 모양**으로 만듭니다.
 - 같은 요소(버튼, 칩 등)가 화면마다 조금씩 다르면 **가장 많이 쓰인 모양 하나로 통일**합니다. 이미 정한 통일 결과는 `docs/screens.md` 5절에 있고, 새로 통일한 것이 생기면 그 표에 추가합니다.

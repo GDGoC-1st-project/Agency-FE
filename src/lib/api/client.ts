@@ -5,17 +5,12 @@ import {
   getRefreshToken,
   setTokens,
 } from "@/lib/auth/token";
+import { ROUTES } from "@/lib/routes";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080").replace(/\/$/, "");
 
 /** true면 실제 서버 대신 `./mock`의 가짜 데이터를 씁니다. `.env.local`의 NEXT_PUBLIC_USE_MOCK으로 켜고 끕니다. */
 export const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
-
-/** 아직 화면은 없지만, 에러 처리 시 이동할 경로 */
-export const ROUTES = {
-  login: "/login",
-  pendingApproval: "/pending",
-} as const;
 
 export class ApiError extends Error {
   constructor(
