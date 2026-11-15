@@ -19,6 +19,7 @@ import type {
   ReportTargetType,
   RequestStatus,
   RequestType,
+  UserStatus,
 } from "@/types/api";
 import {
   ME_ID,
@@ -175,12 +176,86 @@ type Route = [Method, RegExp, Handler];
 
 const MOCK_TOKENS = { accessToken: "mock-access-token", refreshToken: "mock-refresh-token" };
 
+/** 가짜 초대 코드 → 등록된 이름 (CLAUDE.md의 로컬 테스트 초대 코드와 같음) */
+const INVITE_NAMES: Record<string, string> = {
+  "GDGOC-INVITE-01": "강민지",
+  "GDGOC-INVITE-02": "서지안",
+  "GDGOC-INVITE-03": "문하린",
+  "GDGOC-INVITE-04": "임준서",
+  "GDGOC-INVITE-05": "오하늘",
+};
+
+// ───────────────────────── 나(로그인 사용자) 상태 ─────────────────────────
+// 회원가입 → 온보딩 → 승인 대기 흐름을 새로고침해도 이어서 볼 수 있도록 sessionStorage에 저장합니다.
+
+const ME_STORAGE_KEY = "mock:me";
+const SEED_ME = structuredClone(findUser(ME_ID)!);
+const meState: { status: UserStatus; approvalChecks: number } = { status: "APPROVED", approvalChecks: 0 };
+
+function saveMe() {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(ME_STORAGE_KEY, JSON.stringify({ user: findUser(ME_ID), state: meState }));
+  } catch {
+    // 저장소를 못 쓰면 메모리에만 둡니다.
+  }
+}
+
+function loadMe() {
+  if (typeof window === "undefined") return;
+  try {
+    const raw = window.sessionStorage.getItem(ME_STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw) as { user: object; state: typeof meState };
+    Object.assign(findUser(ME_ID)!, saved.user);
+    Object.assign(meState, saved.state);
+  } catch {
+    // 깨진 값이면 무시하고 처음 상태로 시작합니다.
+  }
+}
+loadMe();
+
+/** 승인 전(PENDING) 사용자가 부를 수 있는 API (api-list.md "승인 전 OK" 8개). 그 외는 AUTH403 */
+const PENDING_ALLOWED: [Method, RegExp][] = [
+  ["POST", /^\/api\/v1\/auth\/(signup|login|refresh)$/],
+  ["GET", /^\/api\/v1\/auth\/approval-status$/],
+  ["GET", /^\/api\/v1\/users\/me$/],
+  ["POST", /^\/api\/v1\/users\/me\/profile$/],
+  ["GET", /^\/api\/v1\/keywords$/],
+  ["PUT", /^\/api\/v1\/users\/me\/keywords$/],
+];
+
 const routes: Route[] = [
   // ── 1. 회원가입 · 로그인
-  ["POST", /^\/api\/v1\/auth\/signup$/, () => ({ userId: ME_ID, ...MOCK_TOKENS, status: "APPROVED" })],
-  ["POST", /^\/api\/v1\/auth\/login$/, () => ({ ...MOCK_TOKENS, status: "APPROVED", role: "MEMBER", onboardingStep: "DONE" })],
+  ["POST", /^\/api\/v1\/auth\/signup$/, ({ body }) => {
+    const loginId = String(body?.loginId ?? "");
+    if (!/^[A-Za-z0-9]{4,20}$/.test(loginId) || String(body?.password ?? "").length < 8) badRequest("입력값을 확인해 주세요.");
+    if (loginId.toLowerCase() === "admin") fail(409, "AUTH409", "이미 사용 중인 아이디입니다.");
+    const name = INVITE_NAMES[String(body?.inviteCode ?? "").trim().toUpperCase()];
+    if (!name) fail(400, "INVITE400", "유효하지 않거나 이미 사용된 초대 코드입니다.");
+    // 새 계정: 프로필·키워드 없이 승인 대기 상태로 시작
+    Object.assign(findUser(ME_ID)!, { name, major: null, department: null, bio: null, contact: null, keywords: { can: [], learning: [], interested: [] } });
+    Object.assign(meState, { status: "PENDING", approvalChecks: 0 });
+    saveMe();
+    return { userId: ME_ID, ...MOCK_TOKENS, status: "PENDING" };
+  }],
+  ["POST", /^\/api\/v1\/auth\/login$/, () => {
+    // 로그인은 항상 승인된 일반 사용자(강민지)로 처리
+    Object.assign(findUser(ME_ID)!, structuredClone(SEED_ME));
+    Object.assign(meState, { status: "APPROVED", approvalChecks: 0 });
+    saveMe();
+    return { ...MOCK_TOKENS, status: "APPROVED", role: "MEMBER", onboardingStep: "DONE" };
+  }],
   ["POST", /^\/api\/v1\/auth\/refresh$/, () => ({ ...MOCK_TOKENS })],
-  ["GET", /^\/api\/v1\/auth\/approval-status$/, () => ({ status: "APPROVED" })],
+  ["GET", /^\/api\/v1\/auth\/approval-status$/, () => {
+    // 승인 대기 중이면 첫 번째 확인은 PENDING, 두 번째 확인부터 APPROVED
+    if (meState.status === "PENDING") {
+      meState.approvalChecks += 1;
+      if (meState.approvalChecks >= 2) meState.status = "APPROVED";
+      saveMe();
+    }
+    return { status: meState.status };
+  }],
 
   // ── 2. 내 정보 · 프로필 · 키워드
   ["GET", /^\/api\/v1\/users\/me$/, () => {
@@ -191,13 +266,16 @@ const routes: Route[] = [
     const me = findUser(ME_ID)!;
     if (me.major) fail(409, "PROFILE409", "이미 프로필이 작성되었습니다.");
     if (!body?.bio || !body?.major || !body?.department || !body?.contact) badRequest("필수 값이 비어 있습니다.");
+    if (String(body.bio).length > 100) badRequest("한 줄 소개는 100자 이내로 입력해 주세요.");
     Object.assign(me, { bio: body.bio, major: body.major, department: body.department, contact: body.contact });
+    saveMe();
   }],
   ["PATCH", /^\/api\/v1\/users\/me\/profile$/, ({ body }) => {
     const me = findUser(ME_ID)!;
     for (const key of ["bio", "major", "department", "contact"] as const) {
       if (body?.[key] !== undefined) (me[key] as string) = body[key];
     }
+    saveMe();
   }],
   ["GET", /^\/api\/v1\/keywords$/, ({ query }) => {
     const q = String(query.q ?? "").trim().toLowerCase();
@@ -216,6 +294,7 @@ const routes: Route[] = [
     }
     const toKw = (ids: number[]) => ids.map((id) => keywords.find((k) => k.keywordId === id)!);
     findUser(ME_ID)!.keywords = { can: toKw(group.can), learning: toKw(group.learning), interested: toKw(group.interested) };
+    saveMe();
   }],
   ["GET", /^\/api\/v1\/users\/me\/keywords$/, () => findUser(ME_ID)!.keywords],
 
@@ -497,6 +576,9 @@ export async function mockSend<T>(
   const route = routes.find(([m, re]) => m === method && re.test(path));
   if (!route) {
     return { status: 404, data: { isSuccess: false, code: "COMMON404", message: `가짜 데이터가 없는 API입니다: ${method} ${path}` } };
+  }
+  if (meState.status === "PENDING" && !PENDING_ALLOWED.some(([m, re]) => m === method && re.test(path))) {
+    return { status: 403, data: { isSuccess: false, code: "AUTH403", message: "운영진 승인 후 이용할 수 있습니다." } };
   }
   try {
     const params = path.match(route[1])!.slice(1);

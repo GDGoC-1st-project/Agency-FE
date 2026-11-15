@@ -7,6 +7,7 @@ import { FormCard } from "@/components/ui/Card";
 import { FormError, TextField } from "@/components/ui/Input";
 import { getErrorMessage, login } from "@/lib/api";
 import { pathForOnboardingStep } from "@/lib/routes";
+import { useResetOnHide } from "@/lib/useResetOnHide";
 
 type Errors = Partial<Record<"loginId" | "password", string>>;
 
@@ -24,6 +25,12 @@ export function LoginForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useResetOnHide(() => {
+    setSubmitting(false);
+    setFormError(null);
+    setPassword("");
+  });
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -54,7 +61,10 @@ export function LoginForm() {
             autoComplete="username"
             placeholder="아이디를 입력해 주세요"
             value={loginId}
-            onChange={(e) => setLoginId(e.target.value)}
+            onChange={(e) => {
+              setLoginId(e.target.value);
+              setErrors((prev) => ({ ...prev, loginId: undefined }));
+            }}
             error={errors.loginId}
           />
           <TextField
@@ -64,7 +74,10 @@ export function LoginForm() {
             autoComplete="current-password"
             placeholder="8자 이상 입력해 주세요"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrors((prev) => ({ ...prev, password: undefined }));
+            }}
             error={errors.password}
           />
         </fieldset>

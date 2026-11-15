@@ -37,26 +37,25 @@ interface KeywordChipProps {
   className?: string;
 }
 
-/** Figma Keyword/Chip (모바일): 키워드 편집기에서 고른 키워드 `#Python ×` */
+const KEYWORD_CHIP = "inline-flex h-7.75 items-center gap-1 rounded-full border border-ink bg-white/58 px-2.25 text-11 text-ink";
+
+/**
+ * Figma Keyword/Chip (모바일): 키워드 편집기에서 고른 키워드 `#Python ×`.
+ * onRemove가 있으면 칩 전체가 삭제 버튼입니다 (hover 시 Figma Hover 모양: 바탕 hover, 테두리 1.5px).
+ */
 export function KeywordChip({ name, onRemove, className }: KeywordChipProps) {
+  if (!onRemove) {
+    return <span className={cn(KEYWORD_CHIP, className)}>#{name}</span>;
+  }
   return (
-    <span
-      className={cn(
-        "inline-flex h-7.75 items-center gap-1 rounded-full border border-ink bg-white/58 px-2.25 text-11 text-ink",
-        className,
-      )}
+    <button
+      type="button"
+      onClick={onRemove}
+      aria-label={`${name} 삭제`}
+      className={cn(KEYWORD_CHIP, "transition-colors hover:bg-hover hover:outline-[0.5px] hover:outline-ink", className)}
     >
       #{name}
-      {onRemove && (
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label={`${name} 삭제`}
-          className="-mr-1 inline-flex size-4 items-center justify-center rounded-full hover:bg-hover"
-        >
-          ×
-        </button>
-      )}
-    </span>
+      <span aria-hidden>×</span>
+    </button>
   );
 }

@@ -57,10 +57,19 @@ export function NoteCard({ tone = "yellow", tape, className, children }: NoteCar
 }
 
 /** 입력 양식 카드 (Figma Form/Login · 회원가입 양식): 종이 바탕, 옅은 테두리, 메모 그림자, 위 가운데 테이프 */
-export function FormCard({ tape = "blue", className, children }: { tape?: NoteTone; className?: string; children: ReactNode }) {
+export function FormCard({
+  tape = "blue",
+  className,
+  children,
+}: {
+  /** null이면 테이프 없음 (프로필 작성 양식) */
+  tape?: NoteTone | null;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
     <div className={cn("relative border border-line bg-paper px-5.5 pt-7 pb-6 shadow-paper", className)}>
-      <Tape tone={tape} />
+      {tape && <Tape tone={tape} />}
       {children}
     </div>
   );

@@ -64,7 +64,7 @@
 
 ✅ 구현됨 (2026-11-15): `/login`, `/signup`, `/`(로그인되어 있으면 `/members`, 아니면 `/login`).
 - 이동 경로는 `lib/routes.ts`의 `pathForOnboardingStep`. 회원가입 성공 후에는 항상 프로필 작성(`/onboarding/profile`)으로 갑니다.
-- 아직 없는 화면 주소: `/onboarding/profile`, `/onboarding/keywords`, `/pending`, `/members` (지금은 404).
+- 아직 없는 화면 주소: `/members` (지금은 404).
 - Figma 회원가입은 "가입하기" 버튼이 초대 코드 칸에 붙어 있지만, 로그인과 같게 24px 띄웠습니다.
 
 ### 2단계 · 승인 대기
@@ -79,6 +79,13 @@
 | 키워드 등록 | **키워드 검색(자동완성)** `GET /keywords?q=`, **내 키워드 저장** `PUT /users/me/keywords` (can / learning / interested 세 칸) |
 
 ⚠️ 온보딩 중(승인 전)에는 **프로필 수정**과 **내 키워드 조회**를 부르면 403이 납니다. 키워드 편집기는 처음엔 빈 상태로 시작해야 합니다.
+
+✅ 구현됨 (2026-11-15): `/onboarding/profile`(1/3), `/onboarding/keywords`(2/3), `/pending`(3/3). 세 화면 모두 `OnboardingHeader`를 씁니다.
+- 프로필 작성: Figma 모바일(1:287)은 Flow header지만 가입 설정 단계라 Onboarding header로 바꿨습니다. 칸 순서는 Figma대로 이름(읽기 전용) → 한 줄 소개(100자) → 역할 → 전공 → 연락처.
+- 이미 프로필을 저장한 뒤 "이전"으로 돌아오면 승인 전에는 수정할 수 없어(프로필 수정 API는 승인 필요) 칸을 잠그고 안내만 보여줍니다.
+- 키워드 등록: 편집기는 `components/ui/KeywordEditor` (마이 › 내 키워드에서도 재사용). 같은 키워드를 다른 칸에 넣는 것은 허용(백엔드 명세), 같은 칸 중복은 막습니다. 키워드는 0개여도 저장할 수 있습니다(백엔드가 빈 배열 허용).
+- 키워드 등록 제목은 Figma에서 35px지만 다른 흐름 화면과 같은 39px(`PageIntro variant="flow"`)로 통일했습니다.
+- 승인 대기: 결과가 PENDING이면 "아직 승인 전이에요…" 안내, APPROVED면 `/members`로 이동. 로그아웃은 토큰을 지우고 `/login`으로.
 
 ### 4단계 · 멤버
 | 화면 | API |

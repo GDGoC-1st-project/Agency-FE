@@ -82,6 +82,7 @@
   --radius-tag: 3px;
 
   /* ── 그림자 ── */
+  --shadow-hard-lg: 9px 10px 0 0 var(--color-ink); /* 안내 카드 (가입 승인 대기) */
   --shadow-hard: 4px 4px 0 0 var(--color-ink); /* 주요 버튼 */
   --shadow-hard-md: 3px 3px 0 0 var(--color-ink); /* 요청 카드, 온보딩 로고 */
   --shadow-hard-sm: 2px 2px 0 0 var(--color-ink); /* 상단 로고 */

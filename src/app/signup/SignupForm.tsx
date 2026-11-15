@@ -7,6 +7,7 @@ import { FormCard } from "@/components/ui/Card";
 import { FormError, TextField } from "@/components/ui/Input";
 import { ApiError, getErrorMessage, signup } from "@/lib/api";
 import { ROUTES } from "@/lib/routes";
+import { useResetOnHide } from "@/lib/useResetOnHide";
 
 interface Values {
   loginId: string;
@@ -37,10 +38,19 @@ export function SignupForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  useResetOnHide(() => {
+    setSubmitting(false);
+    setFormError(null);
+    setValues((prev) => ({ ...prev, password: "", passwordConfirm: "" }));
+  });
+
   const bind = (key: keyof Values) => ({
     name: key,
     value: values[key],
-    onChange: (e: { target: { value: string } }) => setValues((prev) => ({ ...prev, [key]: e.target.value })),
+    onChange: (e: { target: { value: string } }) => {
+      setValues((prev) => ({ ...prev, [key]: e.target.value }));
+      setErrors((prev) => ({ ...prev, [key]: undefined }));
+    },
     error: errors[key],
   });
 
