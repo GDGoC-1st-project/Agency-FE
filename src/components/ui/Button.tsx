@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
+import Link from "next/link";
+import type { ButtonHTMLAttributes, ComponentProps, ReactNode, Ref } from "react";
 import { cn } from "@/lib/cn";
 import { Icon, type IconName } from "./Icon";
 
@@ -52,15 +53,16 @@ export function Button({
   );
 }
 
-/** Figma Button/Text Link: "이미 계정이 있나요? 로그인" 같은 작은 글자 링크 버튼 */
+const TEXT_LINK = "p-2.5 text-11 text-muted underline underline-offset-2 transition-colors hover:text-ink";
+
+/** Figma Button/Text Link 모양의 버튼 */
 export function TextButton({ type = "button", className, ...rest }: ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      type={type}
-      className={cn("p-2.5 text-11 text-muted underline-offset-2 hover:text-ink hover:underline", className)}
-      {...rest}
-    />
-  );
+  return <button type={type} className={cn(TEXT_LINK, className)} {...rest} />;
+}
+
+/** Figma Button/Text Link: "이미 계정이 있나요? 로그인"처럼 다른 화면으로 가는 작은 글자 링크 */
+export function TextLink({ className, ...rest }: ComponentProps<typeof Link>) {
+  return <Link className={cn(TEXT_LINK, className)} {...rest} />;
 }
 
 interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> {

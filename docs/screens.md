@@ -62,6 +62,11 @@
 
 로그인 후 이동: `onboardingStep`이 `PROFILE` → 프로필 작성, `KEYWORD` → 키워드 등록, `WAITING` → 승인 대기, `DONE` → 멤버 탐색.
 
+✅ 구현됨 (2026-11-15): `/login`, `/signup`, `/`(로그인되어 있으면 `/members`, 아니면 `/login`).
+- 이동 경로는 `lib/routes.ts`의 `pathForOnboardingStep`. 회원가입 성공 후에는 항상 프로필 작성(`/onboarding/profile`)으로 갑니다.
+- 아직 없는 화면 주소: `/onboarding/profile`, `/onboarding/keywords`, `/pending`, `/members` (지금은 404).
+- Figma 회원가입은 "가입하기" 버튼이 초대 코드 칸에 붙어 있지만, 로그인과 같게 24px 띄웠습니다.
+
 ### 2단계 · 승인 대기
 | 화면 | API |
 | --- | --- |

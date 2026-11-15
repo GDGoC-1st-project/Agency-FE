@@ -1,7 +1,11 @@
+import type { OnboardingStep } from "@/types/api";
+
 /** 화면 경로. 경로 문자열은 여기서만 정의하고 가져다 씁니다. */
 export const ROUTES = {
   login: "/login",
   signup: "/signup",
+  onboardingProfile: "/onboarding/profile",
+  onboardingKeywords: "/onboarding/keywords",
   pendingApproval: "/pending",
   members: "/members",
   recruits: "/recruits",
@@ -9,3 +13,17 @@ export const ROUTES = {
   chats: "/chats",
   my: "/my",
 } as const;
+
+/** 로그인 응답의 onboardingStep으로 다음 화면을 정합니다. */
+export function pathForOnboardingStep(step: OnboardingStep): string {
+  switch (step) {
+    case "PROFILE":
+      return ROUTES.onboardingProfile;
+    case "KEYWORD":
+      return ROUTES.onboardingKeywords;
+    case "WAITING":
+      return ROUTES.pendingApproval;
+    case "DONE":
+      return ROUTES.members;
+  }
+}

@@ -66,6 +66,8 @@ frontend/
 - `signup`·`login`은 성공 시 토큰을 자동 저장하므로 화면에서 따로 저장하지 않습니다.
 - 공통 함수가 토큰 첨부, `AUTH401` 재발급 후 재시도, `REFRESH401` → `/login`, `AUTH403` → `/pending` 이동을 처리합니다. 화면에서 이 처리를 다시 구현하지 않습니다.
 - 그 외 실패는 `ApiError`(`status`, `code`, `message`)로 throw되므로 화면에서 `code`로 분기합니다.
+- 오류 문구는 `getErrorMessage(error, 기본문구)`로 만듭니다 (서버 메시지 / 연결 실패 안내). 입력칸 하나의 문제는 `TextField`·`Field`의 `error`로 칸 아래에, 양식 전체 문제는 `FormError`로 보여줍니다.
+- 요청 중에는 버튼을 `disabled`로 하고 문구를 "…하는 중…"으로 바꿉니다 (`/login`·`/signup` 참고).
 - 요청·응답 타입은 `@/types/api`의 타입을 씁니다. 명세가 바뀌면 `types/api.ts`를 먼저 고칩니다.
 - 기능 파일에서 토큰이 필요 없는 API(로그인·회원가입·재발급)는 `auth: false`를 넘깁니다.
 - 채팅 실시간 수신(WebSocket)도 `new WebSocket`을 직접 쓰지 말고 `connectChatSocket(chatRoomId, onEvent)`를 씁니다. 반환된 함수로 연결을 닫습니다(useEffect cleanup).

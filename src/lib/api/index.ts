@@ -11,3 +11,4 @@ export * from "./connections";
 export * from "./chat";
 export * from "./admin";
 export { ApiError } from "./client";
+export { getErrorMessage } from "./errors";
