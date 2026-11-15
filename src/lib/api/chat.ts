@@ -1,4 +1,5 @@
-import { api, API_URL } from "./client";
+import { api, API_URL, USE_MOCK } from "./client";
+import { connectMockChatSocket } from "./mock";
 import { getAccessToken } from "@/lib/auth/token";
 import type {
   ChatRoomDetailResponse,
@@ -54,6 +55,8 @@ export function connectChatSocket(
   onEvent: (event: ChatSocketEvent) => void,
   handlers: ChatSocketHandlers = {},
 ): () => void {
+  if (USE_MOCK) return connectMockChatSocket(chatRoomId, onEvent, handlers);
+
   const wsBase = API_URL.replace(/^http/, "ws");
   const token = encodeURIComponent(getAccessToken() ?? "");
   const socket = new WebSocket(`${wsBase}/ws/chatrooms/${chatRoomId}?token=${token}`);

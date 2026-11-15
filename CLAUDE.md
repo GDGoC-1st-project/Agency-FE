@@ -8,7 +8,8 @@ Next.js(App Router) + TypeScript + Tailwind CSS. API 명세는 상위 폴더의 
 
 ```
 frontend/
-├── .env.local              # NEXT_PUBLIC_API_URL (기본 http://localhost:8080)
+├── .env.local              # NEXT_PUBLIC_API_URL (기본 http://localhost:8080), NEXT_PUBLIC_USE_MOCK (true면 가짜 데이터)
+├── docs/screens.md         # 화면 목록, Figma 노드, 사용 API, 구현 순서, 결정 사항
 └── src/
     ├── app/                # 라우트(화면). App Router 규칙을 따름
     ├── components/
@@ -28,7 +29,8 @@ frontend/
     │   │   ├── requests.ts     # getReceivedRequests, getSentRequests, acceptRequest, rejectRequest
     │   │   ├── connections.ts  # getConnections
     │   │   ├── chat.ts         # getChatRooms, getChatRoom, getMessages, sendMessage, markAsRead, connectChatSocket
-    │   │   └── admin.ts        # getAdminDashboard, getPendingSignups, approveSignup, getAdminReports, resolveReport
+    │   │   ├── admin.ts        # getAdminDashboard, getPendingSignups, approveSignup, getAdminReports, resolveReport
+    │   │   └── mock/           # 가짜 데이터 모드 (index.ts: 가짜 응답 라우트, data.ts: 초기 데이터)
     │   └── auth/token.ts   # accessToken / refreshToken 저장·삭제
     └── types/api.ts        # api-list.md 기준 요청·응답 타입
 ```
@@ -75,10 +77,23 @@ frontend/
 - **프로필 수정(`updateProfile`)과 내 키워드 조회(`getMyKeywords`)는 승인 후에만** 됩니다. 온보딩에서 쓰지 않습니다.
 - 로그인 응답의 `onboardingStep`(`PROFILE` → `KEYWORD` → `WAITING` → `DONE`)으로 이동할 화면을 정합니다.
 
+### 4-1. 가짜 데이터 모드 (백엔드 없이 개발)
+- `.env.local`에 `NEXT_PUBLIC_USE_MOCK=true`면 `@/lib/api` 함수들이 실제 서버 대신 `src/lib/api/mock`의 가짜 데이터를 돌려줍니다. `false`(또는 없음)면 실제 서버(`NEXT_PUBLIC_API_URL`)를 씁니다.
+- 값을 바꾸면 **개발 서버를 다시 켜야** 적용됩니다 (`NEXT_PUBLIC_` 값은 시작할 때 코드에 박힘).
+- 화면 코드는 모드와 상관없이 똑같이 `@/lib/api` 함수만 씁니다. 화면에서 `USE_MOCK`으로 분기하거나 가짜 데이터를 직접 import하지 않습니다.
+- 가짜 모드 동작:
+  - 로그인·회원가입은 항상 성공하고 **승인된 일반 사용자**(강민지, `role=MEMBER`, `onboardingStep=DONE`)로 처리합니다.
+  - 응답 형식과 에러 코드는 `api-list.md`·백엔드와 같습니다 (예: 같은 글에 두 번 지원하면 `APPLICATION409`).
+  - 작성·수락·삭제 등은 메모리에 반영되지만 **새로고침하면 처음 데이터로 돌아갑니다.**
+  - 채팅은 메시지를 보내면 잠시 뒤 상대의 읽음(`message.read`)과 자동 답장(`message.new`)이 WebSocket 이벤트로 옵니다.
+  - 운영진 API도 데이터를 돌려줍니다 (역할 검사 안 함).
+- 새 API를 추가하면 `src/lib/api/mock/index.ts`의 `routes`에도 가짜 응답을 추가합니다. 초기 데이터는 `mock/data.ts`에 있습니다.
+
 ### 5. 화면은 `docs/screens.md`의 결정 사항을 따름
 - 화면을 만들 때 `docs/screens.md`의 **4절 결정 사항**을 따릅니다. Figma와 결정 사항이 다르면 결정 사항이 우선입니다.
 - 백엔드 API에 없는 기능은 디자인에 있어도 만들지 않습니다.
 - 화면별 Figma 노드 ID, 사용하는 API, 구현 순서도 `docs/screens.md`를 봅니다.
+- **모바일 디자인을 먼저 구현합니다.** 1024px 이상 화면에서는 모바일 화면을 가운데에 모바일 폭(390px)으로 보여주고, PC 레이아웃은 나중에 합니다 (`docs/screens.md` 4-4).
 
 ### 6. Figma 기준
 - 디자인 시스템 페이지의 **컴포넌트 섹션과 조립 화면이 다르면 조립 화면을 따릅니다.**

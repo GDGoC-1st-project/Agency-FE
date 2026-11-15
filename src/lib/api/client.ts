@@ -8,6 +8,9 @@ import {
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080").replace(/\/$/, "");
 
+/** true면 실제 서버 대신 `./mock`의 가짜 데이터를 씁니다. `.env.local`의 NEXT_PUBLIC_USE_MOCK으로 켜고 끕니다. */
+export const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
+
 /** 아직 화면은 없지만, 에러 처리 시 이동할 경로 */
 export const ROUTES = {
   login: "/login",
@@ -109,6 +112,11 @@ function refreshOnce(): Promise<boolean> {
 
 async function send<T>(path: string, options: ApiRequestOptions): Promise<{ status: number; data: ApiResponse<T> }> {
   const { method = "GET", body, query, auth = true, signal } = options;
+
+  if (USE_MOCK) {
+    const { mockSend } = await import("./mock");
+    return mockSend<T>(method, path, query, body);
+  }
 
   const headers: Record<string, string> = { Accept: "application/json" };
   if (body !== undefined) headers["Content-Type"] = "application/json";
