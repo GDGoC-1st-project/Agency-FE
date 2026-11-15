@@ -2,14 +2,16 @@
 
 # GDGoC 인력사무소 — 프론트엔드
 
-Next.js(App Router) + TypeScript + Tailwind CSS. API 명세는 상위 폴더의 `../api-list.md`를 기준으로 합니다.
+Next.js(App Router) + TypeScript + Tailwind CSS. API 명세는 `docs/api-list.md`를 기준으로 합니다.
 
 ## 폴더 구조
 
 ```
 frontend/
 ├── .env.local              # NEXT_PUBLIC_API_URL (기본 http://localhost:8080), NEXT_PUBLIC_USE_MOCK (true면 가짜 데이터)
-├── docs/screens.md         # 화면 목록, Figma 노드, 사용 API, 구현 순서, 결정 사항
+├── docs/
+│   ├── api-list.md         # API 명세 (요청·응답·로그인 조건)
+│   └── screens.md          # 화면 목록, Figma 노드, 사용 API, 구현 순서, 결정 사항
 └── src/
     ├── app/                # 라우트(화면). App Router 규칙을 따름
     │   ├── globals.css     # Tailwind 설정 + Figma 디자인 토큰(@theme)
@@ -37,7 +39,7 @@ frontend/
     │   ├── auth/token.ts   # accessToken / refreshToken 저장·삭제
     │   ├── routes.ts       # 화면 경로 상수 (ROUTES)
     │   └── cn.ts           # className 합치기
-    └── types/api.ts        # api-list.md 기준 요청·응답 타입
+    └── types/api.ts        # docs/api-list.md 기준 요청·응답 타입
 ```
 
 - 특정 화면에서만 쓰는 컴포넌트는 그 라우트 폴더 가까이에 둡니다. 두 곳 이상에서 쓰이면 `components/ui`로 옮깁니다.
@@ -99,7 +101,7 @@ frontend/
   - 회원가입은 초대 코드 `GDGOC-INVITE-01`~`05`만 받습니다 (그 외 `INVITE400`, 아이디 `admin`은 `AUTH409`). 가입하면 프로필·키워드가 빈 **승인 대기(PENDING)** 사용자로 시작하고, 승인 상태 조회는 **두 번째 확인부터 `APPROVED`**입니다. 그래서 회원가입 → 프로필 작성 → 키워드 등록 → 승인 대기 → 멤버까지 이어서 눌러볼 수 있습니다.
   - 승인 대기 중에는 승인 전 API 8개 외에는 실제처럼 `AUTH403`이 납니다.
   - 로그인 사용자 정보(이름·프로필·키워드·승인 상태)만 sessionStorage(`mock:me`)에 저장돼 새로고침해도 이어집니다. 처음부터 다시 하려면 로그인하거나 탭을 새로 여세요.
-  - 응답 형식과 에러 코드는 `api-list.md`·백엔드와 같습니다 (예: 같은 글에 두 번 지원하면 `APPLICATION409`).
+  - 응답 형식과 에러 코드는 `docs/api-list.md`·백엔드와 같습니다 (예: 같은 글에 두 번 지원하면 `APPLICATION409`).
   - 작성·수락·삭제 등은 메모리에 반영되지만 **새로고침하면 처음 데이터로 돌아갑니다.**
   - 채팅은 메시지를 보내면 잠시 뒤 상대의 읽음(`message.read`)과 자동 답장(`message.new`)이 WebSocket 이벤트로 옵니다.
   - 운영진 API도 데이터를 돌려줍니다 (역할 검사 안 함).

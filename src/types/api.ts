@@ -1,5 +1,5 @@
 /**
- * api-list.md 기준 요청·응답 타입.
+ * docs/api-list.md 기준 요청·응답 타입.
  * 응답 타입은 공통 래퍼(ApiResponse)의 `result` 안쪽 내용입니다.
  */
 

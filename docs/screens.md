@@ -3,7 +3,7 @@
 - 출처: Figma [인력사무소 디자인](https://www.figma.com/design/Q4ifVdq8v6VV66UaTYP3r9) (fileKey `Q4ifVdq8v6VV66UaTYP3r9`) → `인력사무소 디자인` 페이지(0:1) → `조립 화면` 섹션(1:122)
   - `모바일 · 22개 화면` (390px), `PC · 21개 화면` (1440px)
   - 2026-11-15에 이 파일로 옮기면서 노드 ID가 `1:xxxx`로 바뀌었습니다. 예전 파일(`KXT5TMF7o6AqSkVHoQUSxi`)의 ID는 쓰지 않습니다.
-- API 이름은 `../../api-list.md`의 기능 이름을 그대로 씁니다.
+- API 이름은 `api-list.md`(같은 폴더)의 기능 이름을 그대로 씁니다.
 - 노드 ID는 Figma에서 바로 찾을 때 씁니다 (`node-id=1-124` 형식).
 - **화면을 만들 때는 4절 "결정 사항"이 디자인보다 우선합니다.**
 
@@ -139,7 +139,7 @@
 | # | 화면 | 디자인 | API |
 | --- | --- | --- | --- |
 | 1 | 회원가입 | 직무, 이메일, 비밀번호, 비밀번호 확인 | `loginId`(영문·숫자 4~20자), `password`, `inviteCode`(필수) |
-| 2 | 프로필 작성 | 이름, 소속, 역할(자유 입력), 연락처, 한 줄 소개 | `bio`, `major`, `department`(`DEV`/`AI`/`DESIGN`), `contact`. 이름은 초대 코드에 등록된 값이 가입 시 자동 저장됨(`backend/BACKEND_SPEC.md:300`) |
+| 2 | 프로필 작성 | 이름, 소속, 역할(자유 입력), 연락처, 한 줄 소개 | `bio`, `major`, `department`(`DEV`/`AI`/`DESIGN`), `contact`. 이름은 초대 코드에 등록된 값이 가입 시 자동 저장됨(`../../backend/BACKEND_SPEC.md:300`, 프론트 저장소 밖) |
 | 3 | 가입 승인 대기 | "멤버 먼저 둘러보기" 버튼 | 멤버 검색은 승인 필요 → 403 |
 | 4 | 모집 글 작성 | 제목, 프로젝트 소개, 관련 키워드(자유 입력) | `requiredRoles`(1개 이상 필수), 키워드는 `keywordIds` |
 | 5 | 모집 글 목록 | 분류 필터, D-day 마감일 | `sort=LATEST`만 지원, 분류·마감일 없음 |

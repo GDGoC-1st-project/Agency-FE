@@ -1,6 +1,6 @@
 /**
  * 가짜 데이터 모드 (NEXT_PUBLIC_USE_MOCK=true).
- * client.ts가 실제 서버 대신 여기로 요청을 보냅니다. 응답은 api-list.md 형식(공통 래퍼 포함)을 따르고,
+ * client.ts가 실제 서버 대신 여기로 요청을 보냅니다. 응답은 docs/api-list.md 형식(공통 래퍼 포함)을 따르고,
  * 실패도 실제 백엔드와 같은 에러 코드로 돌려주므로 화면의 에러 처리를 그대로 확인할 수 있습니다.
  *
  * - 로그인은 항상 성공하고, 승인된 일반 사용자(강민지, MEMBER, onboardingStep=DONE)로 처리합니다.
@@ -215,7 +215,7 @@ function loadMe() {
 }
 loadMe();
 
-/** 승인 전(PENDING) 사용자가 부를 수 있는 API (api-list.md "승인 전 OK" 8개). 그 외는 AUTH403 */
+/** 승인 전(PENDING) 사용자가 부를 수 있는 API (docs/api-list.md "승인 전 OK" 8개). 그 외는 AUTH403 */
 const PENDING_ALLOWED: [Method, RegExp][] = [
   ["POST", /^\/api\/v1\/auth\/(signup|login|refresh)$/],
   ["GET", /^\/api\/v1\/auth\/approval-status$/],

@@ -15,7 +15,7 @@ const TONE_BG: Record<KeywordEditorTone, string> = {
   green: "bg-green-soft",
 };
 
-/** api-list.md: 관계별 최대 20개 */
+/** docs/api-list.md: 관계별 최대 20개 */
 export const MAX_KEYWORDS_PER_RELATION = 20;
 
 interface KeywordEditorProps {

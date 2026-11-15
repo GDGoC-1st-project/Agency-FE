@@ -20,7 +20,7 @@ type Errors = Partial<Record<keyof Values, string>>;
 
 const LOGIN_ID_PATTERN = /^[A-Za-z0-9]{4,20}$/;
 
-/** api-list.md 회원가입 조건: 아이디 영문·숫자 4~20자, 비밀번호 8자 이상, 초대 코드 필수 */
+/** docs/api-list.md 회원가입 조건: 아이디 영문·숫자 4~20자, 비밀번호 8자 이상, 초대 코드 필수 */
 function validate(v: Values): Errors {
   const errors: Errors = {};
   if (!LOGIN_ID_PATTERN.test(v.loginId)) errors.loginId = "아이디는 영문·숫자 4~20자로 입력해 주세요.";
