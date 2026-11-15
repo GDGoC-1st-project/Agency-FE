@@ -272,6 +272,16 @@ export function DevCatalog() {
 
         <Section title="페이지 소개 (PageIntro)">
           <PageIntro variant="flow" eyebrow="START TOGETHER" title="함께할 준비를 시작해요" description="기본 정보를 남기고 나와 잘 맞는 동료를 만나보세요." />
+          <PageIntro
+            eyebrow="RECRUIT BOARD"
+            title="지금 함께할 팀을 찾아요"
+            description="action: 오른쪽 버튼 (모바일은 아이콘만, PC는 글자까지)"
+            action={
+              <Button icon="plus" aria-label="모집 글 쓰기" className="max-lg:w-11.5 max-lg:px-3">
+                <span className="hidden lg:inline">모집 글 쓰기</span>
+              </Button>
+            }
+          />
         </Section>
 
         <Section title="레이아웃 (TopNav · FlowHeader · OnboardingHeader · BottomNav)">

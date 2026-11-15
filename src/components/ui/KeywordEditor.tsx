@@ -25,14 +25,26 @@ interface KeywordEditorProps {
   value: Keyword[];
   onChange: (next: Keyword[]) => void;
   disabled?: boolean;
+  /** 고를 수 있는 최대 개수 (기본: 관계별 20개) */
+  max?: number;
+  /** 입력창 아래 안내 문구 (예: "키워드를 불러오는 중…") */
+  hint?: string;
 }
 
 /**
  * Figma Keyword/Category (모바일): 관계 하나의 키워드 편집 칸.
  * 입력하면 키워드 검색 API로 자동완성 → 목록에서 고르거나 Enter로 추가 → 칩을 누르면 삭제.
- * 승인 전 화면(온보딩)과 마이 › 내 키워드에서 함께 씁니다.
+ * 승인 전 화면(온보딩)과 마이 › 내 키워드, 모집 글 작성(관련 키워드)에서 함께 씁니다.
  */
-export function KeywordEditor({ label, tone, value, onChange, disabled = false }: KeywordEditorProps) {
+export function KeywordEditor({
+  label,
+  tone,
+  value,
+  onChange,
+  disabled = false,
+  max = MAX_KEYWORDS_PER_RELATION,
+  hint,
+}: KeywordEditorProps) {
   const inputId = useId();
   const listId = useId();
   const [query, setQuery] = useState("");
@@ -48,7 +60,7 @@ export function KeywordEditor({ label, tone, value, onChange, disabled = false }
     setQuery("");
   });
 
-  const full = value.length >= MAX_KEYWORDS_PER_RELATION;
+  const full = value.length >= max;
   const trimmed = query.trim();
   // 지금 입력한 검색어의 결과가 아직 안 왔으면 "찾는 중"
   const loading = trimmed.length > 0 && search.q !== trimmed;
@@ -120,7 +132,7 @@ export function KeywordEditor({ label, tone, value, onChange, disabled = false }
           aria-activedescendant={showList && options[active] ? `${listId}-${options[active].keywordId}` : undefined}
           autoComplete="off"
           disabled={disabled || full}
-          placeholder={full ? `최대 ${MAX_KEYWORDS_PER_RELATION}개까지 고를 수 있어요.` : "키워드를 검색해 주세요."}
+          placeholder={full ? `최대 ${max}개까지 고를 수 있어요.` : "키워드를 검색해 주세요."}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -163,6 +175,7 @@ export function KeywordEditor({ label, tone, value, onChange, disabled = false }
           </ul>
         )}
       </div>
+      {hint && <p className="pt-2.5 text-11 text-muted">{hint}</p>}
       {value.length > 0 && (
         <ul aria-label={`${label}로 고른 키워드`} className="flex flex-wrap gap-1.5 pt-3.5">
           {value.map((k) => (
