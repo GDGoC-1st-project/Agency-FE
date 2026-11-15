@@ -1,3 +1,7 @@
+# GDGoC 인력사무소 — 프론트엔드
+
+> **프로젝트를 이어받았다면 [HANDOFF.md](HANDOFF.md)부터 읽어 주세요.** 실행 방법, 폴더 구조, 남은 작업, 협업 규칙이 있습니다.
+
 # Commit 메세지 작성 시 유의사항
 
 ### 📋 Commit Message Convention
