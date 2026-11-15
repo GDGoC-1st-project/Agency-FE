@@ -5,10 +5,11 @@
  *
  * - 로그인은 항상 성공하고, 승인된 일반 사용자(강민지, MEMBER, onboardingStep=DONE)로 처리합니다.
  * - 데이터는 메모리에만 있어서 새로고침하면 처음 상태로 돌아갑니다.
- * - 운영진 API도 데이터를 돌려줍니다 (역할 검사 안 함). 운영 화면을 만들 때 쓰세요.
+ * - 아이디 "admin"으로 로그인하면 운영진(ADMIN)입니다. 운영진 API는 ADMIN이 아니면 실제처럼 403 ADMIN403.
  */
 import type {
   ApiResponse,
+  Role,
   ChatSocketEvent,
   Department,
   MessageItem,
@@ -183,7 +184,8 @@ const INVITE_NAMES: Record<string, string> = {
 
 const ME_STORAGE_KEY = "mock:me";
 const SEED_ME = structuredClone(findUser(ME_ID)!);
-const meState: { status: UserStatus; approvalChecks: number } = { status: "APPROVED", approvalChecks: 0 };
+/** role: 아이디 "admin"으로 로그인하면 ADMIN (운영 화면 확인용) */
+const meState: { status: UserStatus; approvalChecks: number; role: Role } = { status: "APPROVED", approvalChecks: 0, role: "MEMBER" };
 
 function saveMe() {
   if (typeof window === "undefined") return;
@@ -228,16 +230,17 @@ const routes: Route[] = [
     if (!name) fail(400, "INVITE400", "유효하지 않거나 이미 사용된 초대 코드입니다.");
     // 새 계정: 프로필·키워드 없이 승인 대기 상태로 시작
     Object.assign(findUser(ME_ID)!, { name, major: null, department: null, bio: null, contact: null, keywords: { can: [], learning: [], interested: [] } });
-    Object.assign(meState, { status: "PENDING", approvalChecks: 0 });
+    Object.assign(meState, { status: "PENDING", approvalChecks: 0, role: "MEMBER" });
     saveMe();
     return { userId: ME_ID, ...MOCK_TOKENS, status: "PENDING" };
   }],
-  ["POST", /^\/api\/v1\/auth\/login$/, () => {
-    // 로그인은 항상 승인된 일반 사용자(강민지)로 처리
+  ["POST", /^\/api\/v1\/auth\/login$/, ({ body }) => {
+    // 로그인은 항상 승인된 사용자(강민지)로 처리. 아이디가 "admin"이면 운영진(ADMIN)
+    const role: Role = String(body?.loginId ?? "").trim().toLowerCase() === "admin" ? "ADMIN" : "MEMBER";
     Object.assign(findUser(ME_ID)!, structuredClone(SEED_ME));
-    Object.assign(meState, { status: "APPROVED", approvalChecks: 0 });
+    Object.assign(meState, { status: "APPROVED", approvalChecks: 0, role });
     saveMe();
-    return { ...MOCK_TOKENS, status: "APPROVED", role: "MEMBER", onboardingStep: "DONE" };
+    return { ...MOCK_TOKENS, status: "APPROVED", role, onboardingStep: "DONE" };
   }],
   ["POST", /^\/api\/v1\/auth\/refresh$/, () => ({ ...MOCK_TOKENS })],
   ["GET", /^\/api\/v1\/auth\/approval-status$/, () => {
@@ -253,7 +256,7 @@ const routes: Route[] = [
   // ── 2. 내 정보 · 프로필 · 키워드
   ["GET", /^\/api\/v1\/users\/me$/, () => {
     const me = findUser(ME_ID)!;
-    return { userId: me.userId, name: me.name, major: me.major, department: me.department, bio: me.bio, contact: me.contact, role: "MEMBER" };
+    return { userId: me.userId, name: me.name, major: me.major, department: me.department, bio: me.bio, contact: me.contact, role: meState.role };
   }],
   ["POST", /^\/api\/v1\/users\/me\/profile$/, ({ body }) => {
     const me = findUser(ME_ID)!;
@@ -572,6 +575,9 @@ export async function mockSend<T>(
   }
   if (meState.status === "PENDING" && !PENDING_ALLOWED.some(([m, re]) => m === method && re.test(path))) {
     return { status: 403, data: { isSuccess: false, code: "AUTH403", message: "운영진 승인 후 이용할 수 있습니다." } };
+  }
+  if (path.startsWith("/api/v1/admin/") && meState.role !== "ADMIN") {
+    return { status: 403, data: { isSuccess: false, code: "ADMIN403", message: "운영진만 이용할 수 있습니다." } };
   }
   try {
     const params = path.match(route[1])!.slice(1);

@@ -57,19 +57,25 @@ export function Button({
 export function ButtonLink({
   variant = "primary",
   fullWidth = false,
+  icon,
   className,
+  children,
   ...rest
-}: ComponentProps<typeof Link> & { variant?: Variant; fullWidth?: boolean }) {
+}: ComponentProps<typeof Link> & { variant?: Variant; fullWidth?: boolean; /** 글자 앞 아이콘. 글자 없이 아이콘만이면 46px 정사각형 (aria-label 필수) */ icon?: IconName }) {
   return (
     <Link
       className={cn(
-        "inline-flex h-11 shrink-0 items-center justify-center gap-2 px-4.5 text-12 font-bold text-ink transition-colors",
+        "inline-flex h-11 shrink-0 items-center justify-center gap-2 text-12 font-bold text-ink transition-colors",
+        children ? "px-4.5" : "w-11.5 px-3",
         fullWidth && "w-full",
         VARIANT[variant],
         className,
       )}
       {...rest}
-    />
+    >
+      {icon && <Icon name={icon} />}
+      {children}
+    </Link>
   );
 }
 

@@ -1,4 +1,4 @@
-import type { Department, ReasonType, RejectReasonType } from "@/types/api";
+import type { Department, ReasonType, RejectReasonType, ReportTargetType } from "@/types/api";
 
 /** 분야 표시 이름 (docs/screens.md 4-3: 개발 · AI · 디자인) */
 export const DEPARTMENT_LABEL: Record<Department, string> = {
@@ -27,4 +27,11 @@ export const REJECT_REASON_LABEL: Record<RejectReasonType, string> = {
   NOT_MATCHED: "관심사가 맞지 않아요",
   CLOSED: "모집이 끝났어요",
   ETC: "기타",
+};
+
+/** 신고 대상 종류 (운영 관리 › 신고 관리) */
+export const REPORT_TARGET_LABEL: Record<ReportTargetType, string> = {
+  USER: "멤버",
+  POST: "모집 글",
+  MESSAGE: "채팅 메시지",
 };

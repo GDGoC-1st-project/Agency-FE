@@ -80,24 +80,41 @@ export function BoxCard({ className, children }: { className?: string; children:
   return <div className={cn("border border-line bg-paper shadow-hard-md", className)}>{children}</div>;
 }
 
-interface LinkCardProps {
+type LinkCardProps = {
   href: string;
-  icon: IconName;
   title: string;
   description: string;
   tone?: NoteTone;
-}
+} & (
+  | { icon: IconName; count?: never }
+  /** Card/Admin Action: 아이콘 대신 숫자 원(44px), 높이 130, 제목 22px */
+  | { count: number; icon?: never }
+);
 
-/** Figma Card/Management Link · Card/Admin Action: 아이콘 + 제목 + 설명 + 오른쪽 화살표 */
-export function LinkCard({ href, icon, title, description, tone = "yellow" }: LinkCardProps) {
+/**
+ * Figma Card/Management Link (마이 "내 정보 관리"): 아이콘 + 제목 + 설명 + 오른쪽 화살표
+ * Figma Card/Admin Action (운영 관리): `count`를 주면 아이콘 자리에 숫자 원, 더 큰 카드
+ */
+export function LinkCard({ href, icon, count, title, description, tone = "yellow" }: LinkCardProps) {
+  const isAction = count !== undefined;
   return (
     <Link
       href={href}
-      className={cn("flex items-center gap-3.5 p-4.5 shadow-paper transition-transform hover:-translate-y-0.5", NOTE_BG[tone])}
+      className={cn(
+        "flex items-center shadow-paper transition-transform hover:-translate-y-0.5",
+        isAction ? "min-h-32.5 gap-4 px-5 py-6" : "gap-3.5 p-4.5",
+        NOTE_BG[tone],
+      )}
     >
-      <Icon name={icon} className="shrink-0 text-ink" />
+      {isAction ? (
+        <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-ink bg-white/48 font-display text-display-2xs text-ink">
+          {count}
+        </span>
+      ) : (
+        <Icon name={icon} className="shrink-0 text-ink" />
+      )}
       <span className="flex min-w-0 flex-1 flex-col">
-        <span className="font-display text-display-2xs text-ink">{title}</span>
+        <span className={cn("font-display text-ink", isAction ? "text-display-xs" : "text-display-2xs")}>{title}</span>
         <span className="pt-0.75 text-10 text-note">{description}</span>
       </span>
       <Icon name="chevronRight" size={17} className="shrink-0 text-ink" />

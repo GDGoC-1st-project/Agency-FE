@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { OnboardingHeader } from "@/components/layout/OnboardingHeader";
 import { Tape } from "@/components/ui/Card";
 import { PageIntro } from "@/components/ui/PageIntro";
-import { KeywordsForm } from "./KeywordsForm";
+import { KeywordsForm } from "@/components/ui/KeywordsForm";
 
 export const metadata: Metadata = { title: "키워드 등록 · 인력사무소" };
 

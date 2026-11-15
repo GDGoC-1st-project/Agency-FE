@@ -148,6 +148,7 @@ export function DevCatalog() {
           </div>
           <div className="flex items-center gap-3">
             <ButtonLink href="/dev">채팅하기 (ButtonLink)</ButtonLink>
+            <ButtonLink href="/dev" variant="outline" icon="edit" aria-label="프로필 수정 (아이콘만)" />
             <TextButton>이미 계정이 있나요? 로그인</TextButton>
             <IconButton icon="close" label="닫기" variant="round" />
             <IconButton icon="back" label="뒤로 가기" />
@@ -264,6 +265,7 @@ export function DevCatalog() {
           <LinkCard href={ROUTES.my} icon="key" title="내 키워드" description="잘하는 일과 관심사를 수정해요" />
           <LinkCard href={ROUTES.my} icon="members" title="내 연결" description="연결된 동료를 한눈에 확인해요" tone="blue" />
           <LinkCard href={ROUTES.my} icon="shield" title="운영 관리" description="가입 승인과 신고를 처리해요" tone="green" />
+          <LinkCard href={ROUTES.my} count={2} title="가입 승인 대기 2명" description="새 멤버의 프로필을 검토해요 (count: Card/Admin Action)" tone="yellow" />
         </Section>
 
         <Section title="상태 안내 (StateMessage)">

@@ -42,7 +42,7 @@ export function Sidebar({ requestCount = 0, userName = null, preview = false }: 
       <nav aria-label="주요 메뉴" className="pt-12">
         <ul className="flex flex-col">
           {NAV_ITEMS.map((item) => {
-            const active = isActive(pathname, item.href);
+            const active = isActive(pathname, item);
             const count = item.key === "requests" ? requestCount : 0;
             return (
               <li key={item.href}>

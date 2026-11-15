@@ -12,7 +12,7 @@ import { isActive, NAV_ITEMS } from "./navItems";
  */
 export function PcTopBar({ preview = false, title: titleOverride }: { preview?: boolean; /** 없으면 현재 메뉴 이름 */ title?: string }) {
   const pathname = usePathname();
-  const title = titleOverride ?? NAV_ITEMS.find((item) => isActive(pathname, item.href))?.label ?? "인력사무소";
+  const title = titleOverride ?? NAV_ITEMS.find((item) => isActive(pathname, item))?.label ?? "인력사무소";
 
   return (
     <header

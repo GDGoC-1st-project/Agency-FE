@@ -14,7 +14,12 @@ export const ROUTES = {
   /** 채팅방 (7단계 채팅 화면에서 만듭니다) */
   chatRoom: (chatRoomId: number) => `/chats/${chatRoomId}`,
   my: "/my",
+  myProfile: "/my/profile",
+  myKeywords: "/my/keywords",
   myConnections: "/my/connections",
+  admin: "/admin",
+  adminSignups: "/admin/signups",
+  adminReports: "/admin/reports",
 } as const;
 
 /** 로그인 응답의 onboardingStep으로 다음 화면을 정합니다. */

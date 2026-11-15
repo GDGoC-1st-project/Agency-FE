@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { OnboardingHeader } from "@/components/layout/OnboardingHeader";
 import { PageIntro } from "@/components/ui/PageIntro";
-import { ProfileForm } from "./ProfileForm";
+import { ProfileForm } from "@/components/ui/ProfileForm";
 
 export const metadata: Metadata = { title: "프로필 작성 · 인력사무소" };
 

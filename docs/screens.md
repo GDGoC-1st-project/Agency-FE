@@ -99,12 +99,25 @@
 | 📎 프로필 수정 (승인 후) | **프로필 수정** `PATCH /users/me/profile` (온보딩의 프로필 폼 재사용) |
 | 📎 내 키워드 | **내 키워드 조회**, **키워드 검색**, **내 키워드 저장** (온보딩 키워드 편집기 재사용) |
 
-✅ 구현됨 (2026-11-15): `/members` (멤버 탐색 + 멤버 프로필 다이얼로그 + 같이해요 제안 다이얼로그), 모바일·PC 모두. 📎 마이 화면들은 아직.
+✅ 구현됨 (2026-11-15): `/members` (멤버 탐색 + 멤버 프로필 다이얼로그 + 같이해요 제안 다이얼로그), 모바일·PC 모두. 📎 마이 화면들은 아래 "📎 마이" 참고.
 - 검색: 멤버 검색 API는 키워드로만 찾으므로 안내 문구를 "키워드로 검색해 보세요"로 바꿨습니다(Figma: 이름·역할·키워드). 입력을 멈추면 0.3초 뒤, Enter·PC "검색" 버튼은 바로 검색. `relation`은 디자인에 없어 쓰지 않습니다.
 - 다음 페이지가 있으면 목록 아래 "더 보기" (Figma에 없음, 20명 넘을 때 필요).
 - 멤버 프로필: "…" 메뉴의 **신고하기**는 신고 API에 사유(필수, 200자)가 필요해 다이얼로그 안에 사유 입력 화면을 넣었습니다. **차단하기**는 확인 후 차단하고 목록을 다시 불러옵니다(차단한 멤버는 목록에서 빠짐). 연락처는 API에 있지만 디자인에 없어 보여주지 않습니다.
 - 같이해요 제안: 제안 API에 `reasonType`(필수)이 있는데 디자인에 칸이 없어 **제안 사유 칩**(프로젝트·스터디·해커톤·공모전·커피챗·취미·관심사·기타)을 추가했습니다. 이미 연결됐거나 대기 중이면 `PROPOSAL409` 안내.
 - PC 다이얼로그는 Figma 배치대로 화면 오른쪽 가운데(오른쪽 여백 16px)에 폭 520으로 뜹니다.
+
+✅ 📎 마이 구현됨 (2026-11-15): `/my`(마이), `/my/profile`(프로필 수정), `/my/keywords`(내 키워드), `/my/connections`(연결 동료, 7단계에서 만듦), 모바일·PC 모두.
+- 마이 (1:275, 1:571): 내 정보 조회 + 내 키워드 조회.
+  - 프로필 카드: 아바타 · 이름 · "분야 · 전공"(직무 대신 개발/AI/디자인, 4-2의 ⑧) · 한 줄 소개 · 키워드.
+  - 키워드는 Figma처럼 한 줄로 섞지 않고 "할 수 있는 것 / 배우고 싶은 것 / 관심 있는 것"으로 나눠 보여줍니다(비어 있는 칸은 숨김).
+  - "나의 연결"·"작성한 모집" 통계 카드는 4-3의 4번대로 뺐고, PC에서 그 자리(오른쪽 열)에 모바일에만 있던 "내 정보 관리" 바로가기(내 키워드 · 내 연결 · 운영 관리)를 둡니다.
+  - "운영 관리" 카드는 `role=ADMIN`일 때만. 설명 문구도 운영진이 아니면 "키워드와 연결을 관리해요".
+  - **로그아웃 버튼은 Figma(모바일·PC 마이)에 없어서 만들지 않았습니다.**
+- 프로필 수정: 온보딩과 같은 `ui/ProfileForm`을 `mode="edit"`로 씁니다(프로필 수정 API, 기존 값 채움, "저장하기").
+  - 모바일: 마이 오른쪽 위 연필 버튼 → `/my/profile` 화면(Flow Header "프로필 수정"), 저장하면 마이로.
+  - PC: Figma 1:584처럼 마이 위 다이얼로그("PROFILE EDIT / 나를 소개하는 메모"). 온보딩용 진행 막대·"다음: 키워드 등록"·데모 문구는 넣지 않았습니다. 저장하면 닫히고 "프로필을 고쳤어요." 안내.
+- 내 키워드 (1:304, 1:639): 온보딩과 같은 `ui/KeywordsForm`을 `mode="edit"`로 씁니다. 내 키워드 조회로 세 칸을 채우고, 내 키워드 저장(전체 교체) 후 마이로 돌아갑니다. 버튼은 모바일 "저장하기"(꽉 참), PC "저장"(오른쪽 아래).
+  - Figma 모바일 칸 이름은 "할 수 있어요 / 배우고 싶어요 / 관심 있어요"지만, 같은 편집기를 쓰는 온보딩·PC와 맞춰 "할 수 있는 것 / 배우고 싶은 것 / 관심 있는 것"으로 두었습니다.
 
 ### 5단계 · 모집글
 | 화면 | API |
@@ -168,6 +181,13 @@
 | 신고 관리 | **신고 목록** `GET /admin/reports`, **신고 처리** `PATCH /admin/reports/{reportId}/resolve` (메모 선택) |
 
 마이 화면의 "운영 관리" 카드는 `role=ADMIN`일 때만 보여줍니다.
+
+✅ 구현됨 (2026-11-15): `/admin`(운영 관리), `/admin/signups`(가입 승인), `/admin/reports`(신고 관리), 모바일·PC 모두. 가짜 데이터 모드에서는 아이디 `admin`으로 로그인하면 운영진입니다.
+- 접근: `app/admin/layout`의 `AdminGuard`가 내 정보의 `role`을 확인해 ADMIN이 아니면 `/members`로 보냅니다(주소로 직접 들어와도). 운영진 API가 `ADMIN403`을 줘도 같은 곳으로 보냅니다.
+- 화면 틀: 모바일은 Flow Header("운영 관리" → 마이로, "가입 승인"·"신고 관리" → 운영 관리로), PC는 상단바 제목만 바꾸고 사이드바는 "마이"를 선택한 채로 둡니다.
+- 운영 관리 (1:352, 1:668): 운영 현황 API의 숫자로 "가입 승인 대기 N명"·"신고 처리 대기 N건" 카드(`LinkCard`의 `count`). Figma의 "운영자 전용 데모 화면입니다." 문구는 넣지 않았습니다.
+- 가입 승인 (1:362, 1:680): "WAITING LIST" + 총 건수(`totalCount`). Figma 카드의 "아이디"는 목록 API에 없어서 전공 · 분야 · 키워드를 보여줍니다. "승인" → 가입 승인 API → 카드를 빼고 건수를 줄이고 안내. PC는 Figma(한 줄 세로)와 달리 연결 동료처럼 3열로 놓았습니다(신청이 많을 때를 위해).
+- 신고 관리 (1:371, 1:691): 처리 대기(`status=PENDING`) 신고 목록. 카드에 신고 대상("모집 글 · 제목" 등) · 사유 · 처리 상태에 더해 API가 주는 신고한 사람 · 접수 시간을 넣었습니다. "처리하기" → 다이얼로그("REPORT REVIEW / 신고 처리", 메모 선택 200자) → 신고 처리 API → 카드를 빼고 건수를 줄입니다. 이미 처리된 신고(`REPORT409`)도 목록에서 빼고 안내.
 
 ---
 
@@ -315,7 +335,9 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Card/Member · Card/Recruit 바탕, Decor/Tape | `ui/Card`의 `NoteCard`, `Tape`, `noteToneAt` | 카드 내용은 화면에서 조립 |
 | Card/Request | `ui/Card`의 `BoxCard` | |
 | Chat/List Panel · List Item · Header · Bubble · Date Divider · Composer | `app/chats`의 `ChatList`, `ChatRoom` (채팅 화면 전용) | 첨부(+) 버튼 없음 (4-1의 10번) |
-| Card/Management Link · Card/Admin Action | `ui/Card`의 `LinkCard` | |
+| Card/Management Link · Card/Admin Action | `ui/Card`의 `LinkCard` | `icon` = Management Link(마이), `count` = Admin Action(운영 관리, 숫자 원) |
+| Dialog/Profile Setup · 마이 · 프로필 관리 양식 | `ui/ProfileForm` | `mode`: onboarding(작성) / edit(수정), `frame`: card / plain(다이얼로그 안) |
+| Keyword/Category 세 칸 + 저장 | `ui/KeywordsForm` (칸 하나는 `ui/KeywordEditor`) | `mode`: onboarding(빈 칸) / edit(내 키워드 불러와 채움) |
 | Page Intro · Intro/Flow | `ui/PageIntro` (`variant` main / flow) | |
 | Feedback/State | `ui/StateMessage` | empty / error |
 | Onboarding/Progress | `ui/ProgressBar` | |

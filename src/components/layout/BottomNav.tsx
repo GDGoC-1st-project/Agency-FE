@@ -20,7 +20,7 @@ export function BottomNav() {
     >
       <ul className="flex">
         {NAV_ITEMS.map((item) => {
-          const active = isActive(pathname, item.href);
+          const active = isActive(pathname, item);
           return (
             <li key={item.href} className="flex-1">
               <Link
