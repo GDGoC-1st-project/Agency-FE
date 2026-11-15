@@ -10,6 +10,7 @@ import { Eyebrow, PageIntro } from "@/components/ui/PageIntro";
 import { ProfileForm } from "@/components/ui/ProfileForm";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { getErrorMessage, getMe, getMyKeywords } from "@/lib/api";
+import { logout } from "@/lib/auth/token";
 import { DEPARTMENT_LABEL } from "@/lib/labels";
 import { ROUTES } from "@/lib/routes";
 import { useResetOnHide } from "@/lib/useResetOnHide";
@@ -147,6 +148,8 @@ export function MyDesk() {
                 <LinkCard href={ROUTES.myKeywords} icon="key" title="내 키워드" description="잘하는 일과 관심사를 수정해요" tone="yellow" />
                 <LinkCard href={ROUTES.myConnections} icon="members" title="내 연결" description="연결된 동료를 한눈에 확인해요" tone="blue" />
                 {isAdmin && <LinkCard href={ROUTES.admin} icon="shield" title="운영 관리" description="가입 승인과 신고를 처리해요" tone="green" />}
+                {/* Figma에 없는 카드: 승인된 사용자가 로그아웃할 곳이 없어 추가 (아이콘은 Figma 세트의 뒤로가기 화살표) */}
+                <LinkCard onClick={logout} icon="back" title="로그아웃" description="이 기기에서 로그아웃하고 로그인 화면으로 가요" tone="pink" />
               </div>
             </section>
           </div>

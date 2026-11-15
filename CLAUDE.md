@@ -18,7 +18,7 @@ frontend/
     │   └── dev/            # 컴포넌트 모음 페이지 /dev (개발 모드에서만)
     ├── components/
     │   ├── layout/         # 모바일: TopNav, BottomNav, FlowHeader, OnboardingHeader / PC: Sidebar, PcTopBar / 묶음: AppShell, MainLayout, AuthLayout / Dialog(모바일 시트·PC 카드)
-    │   └── ui/             # 공통 UI (Button, Input, Chip, Badge, Avatar, Card, Tabs, PageIntro, StateMessage, ProgressBar, Logo, Icon) + 여러 화면이 함께 쓰는 양식 (KeywordEditor, ProfileForm, KeywordsForm)
+    │   └── ui/             # 공통 UI (Button, Input, Chip, Badge, Avatar, Card, Tabs, PageIntro, StateMessage, NotFound(404), ProgressBar, Logo, Icon) + 여러 화면이 함께 쓰는 양식 (KeywordEditor, ProfileForm, KeywordsForm)
     ├── lib/
     │   ├── api/
     │   │   ├── client.ts   # 공통 호출 함수 (apiRequest, api). 기능별 파일 내부에서만 사용
@@ -36,7 +36,7 @@ frontend/
     │   │   ├── chat.ts         # getChatRooms, getChatRoom, getMessages, sendMessage, markAsRead, connectChatSocket
     │   │   ├── admin.ts        # getAdminDashboard, getPendingSignups, approveSignup, getAdminReports, resolveReport
     │   │   └── mock/           # 가짜 데이터 모드 (index.ts: 가짜 응답 라우트, data.ts: 초기 데이터)
-    │   ├── auth/token.ts   # accessToken / refreshToken 저장·삭제
+    │   ├── auth/token.ts   # accessToken / refreshToken 저장·삭제, logout (토큰 지우고 로그인 화면으로)
     │   ├── routes.ts       # 화면 경로 상수 (ROUTES)
     │   ├── datetime.ts     # API 날짜 → "오후 2:14" · "어제" · "오늘" 같은 화면 문구
     │   └── cn.ts           # className 합치기

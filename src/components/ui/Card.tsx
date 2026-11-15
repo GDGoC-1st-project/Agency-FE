@@ -81,7 +81,6 @@ export function BoxCard({ className, children }: { className?: string; children:
 }
 
 type LinkCardProps = {
-  href: string;
   title: string;
   description: string;
   tone?: NoteTone;
@@ -89,23 +88,26 @@ type LinkCardProps = {
   | { icon: IconName; count?: never }
   /** Card/Admin Action: 아이콘 대신 숫자 원(44px), 높이 130, 제목 22px */
   | { count: number; icon?: never }
-);
+) &
+  (
+    | { href: string; onClick?: never }
+    /** 화면 이동 대신 동작 (예: 마이의 "로그아웃"). 링크 대신 버튼으로 그립니다 */
+    | { onClick: () => void; href?: never }
+  );
 
 /**
  * Figma Card/Management Link (마이 "내 정보 관리"): 아이콘 + 제목 + 설명 + 오른쪽 화살표
  * Figma Card/Admin Action (운영 관리): `count`를 주면 아이콘 자리에 숫자 원, 더 큰 카드
  */
-export function LinkCard({ href, icon, count, title, description, tone = "yellow" }: LinkCardProps) {
+export function LinkCard({ href, onClick, icon, count, title, description, tone = "yellow" }: LinkCardProps) {
   const isAction = count !== undefined;
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "flex items-center shadow-paper transition-transform hover:-translate-y-0.5",
-        isAction ? "min-h-32.5 gap-4 px-5 py-6" : "gap-3.5 p-4.5",
-        NOTE_BG[tone],
-      )}
-    >
+  const className = cn(
+    "flex w-full items-center text-left shadow-paper transition-transform hover:-translate-y-0.5",
+    isAction ? "min-h-32.5 gap-4 px-5 py-6" : "gap-3.5 p-4.5",
+    NOTE_BG[tone],
+  );
+  const content = (
+    <>
       {isAction ? (
         <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-ink bg-white/48 font-display text-display-2xs text-ink">
           {count}
@@ -118,6 +120,18 @@ export function LinkCard({ href, icon, count, title, description, tone = "yellow
         <span className="pt-0.75 text-10 text-note">{description}</span>
       </span>
       <Icon name="chevronRight" size={17} className="shrink-0 text-ink" />
+    </>
+  );
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={className}>
+        {content}
+      </button>
+    );
+  }
+  return (
+    <Link href={href!} className={className}>
+      {content}
     </Link>
   );
 }

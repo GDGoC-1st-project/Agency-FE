@@ -10,7 +10,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { TopNav } from "@/components/layout/TopNav";
 import { Avatar, toneFor } from "@/components/ui/Avatar";
 import { CountBadge } from "@/components/ui/Badge";
-import { Button, ButtonLink, IconButton, TextButton } from "@/components/ui/Button";
+import { Button, ButtonLink, IconButton, TextButton, TextLink } from "@/components/ui/Button";
 import { BoxCard, LinkCard, MoreLabel, NoteCard, noteToneAt } from "@/components/ui/Card";
 import { FilterChip, KeywordChip, KeywordTag } from "@/components/ui/Chip";
 import { Icon, ICON_NAMES } from "@/components/ui/Icon";
@@ -266,6 +266,10 @@ export function DevCatalog() {
           <LinkCard href={ROUTES.my} icon="members" title="내 연결" description="연결된 동료를 한눈에 확인해요" tone="blue" />
           <LinkCard href={ROUTES.my} icon="shield" title="운영 관리" description="가입 승인과 신고를 처리해요" tone="green" />
           <LinkCard href={ROUTES.my} count={2} title="가입 승인 대기 2명" description="새 멤버의 프로필을 검토해요 (count: Card/Admin Action)" tone="yellow" />
+          <LinkCard onClick={() => alert("onClick: 버튼으로 그려짐")} icon="back" title="로그아웃" description="href 대신 onClick (마이의 로그아웃)" tone="pink" />
+          <p className="text-11 text-muted">
+            404 화면(ui/NotFound)은 전체 화면이라 여기 넣지 않았어요: <TextLink href="/dev/없는-주소">없는 주소로 가 보기</TextLink>
+          </p>
         </Section>
 
         <Section title="상태 안내 (StateMessage)">

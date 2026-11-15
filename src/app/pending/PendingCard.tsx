@@ -6,7 +6,7 @@ import { Button, TextButton } from "@/components/ui/Button";
 import { Tape } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
 import { getApprovalStatus, getErrorMessage } from "@/lib/api";
-import { clearTokens } from "@/lib/auth/token";
+import { logout } from "@/lib/auth/token";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/routes";
 import { useResetOnHide } from "@/lib/useResetOnHide";
@@ -38,11 +38,6 @@ export function PendingCard() {
       setNotice({ tone: "error", text: getErrorMessage(error, "승인 상태를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.") });
     }
     setChecking(false);
-  }
-
-  function logout() {
-    clearTokens();
-    router.replace(ROUTES.login);
   }
 
   return (
