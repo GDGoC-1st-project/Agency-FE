@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MobileColumn } from "@/components/layout/MobileColumn";
 import { OnboardingHeader } from "@/components/layout/OnboardingHeader";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { ProfileForm } from "./ProfileForm";
@@ -6,9 +7,10 @@ import { ProfileForm } from "./ProfileForm";
 export const metadata: Metadata = { title: "프로필 작성 · 인력사무소" };
 
 /** 가입 설정 1/3 — Figma 모바일 · 마이 · 프로필 관리 (1:287). 입력칸은 docs/screens.md 4-1·4-3 결정을 따릅니다. */
+/* PC 디자인은 아직 만들지 않아 1024px 이상에서도 모바일 폭으로 보여줍니다 (docs/screens.md 4-4). */
 export default function OnboardingProfilePage() {
   return (
-    <>
+    <MobileColumn>
       <OnboardingHeader step={1} />
       <main className="flex flex-col gap-7.5 px-4 pt-8.5 pb-13">
         <PageIntro
@@ -19,6 +21,6 @@ export default function OnboardingProfilePage() {
         />
         <ProfileForm />
       </main>
-    </>
+    </MobileColumn>
   );
 }

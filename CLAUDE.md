@@ -17,7 +17,7 @@ frontend/
     │   ├── globals.css     # Tailwind 설정 + Figma 디자인 토큰(@theme)
     │   └── dev/            # 컴포넌트 모음 페이지 /dev (개발 모드에서만)
     ├── components/
-    │   ├── layout/         # TopNav, BottomNav, FlowHeader, OnboardingHeader, Dialog, MainLayout
+    │   ├── layout/         # 모바일: TopNav, BottomNav, FlowHeader, OnboardingHeader / PC: Sidebar, PcTopBar / 묶음: AppShell, MainLayout, AuthLayout, MobileColumn / Dialog
     │   └── ui/             # 공통 UI (Button, Input, Chip, Badge, Avatar, Card, Tabs, PageIntro, StateMessage, ProgressBar, Logo, Icon)
     ├── lib/
     │   ├── api/
@@ -50,7 +50,7 @@ frontend/
 ### 1. 공통 컴포넌트는 `components/ui`에 두고 재사용
 - 버튼, 입력창, 카드, 모달, 태그, 빈 상태 등 반복되는 UI는 `src/components/ui`에 만듭니다.
 - 새로 만들기 전에 `components/ui`에 같은 역할의 컴포넌트가 있는지 먼저 확인하고, 있으면 그것을 쓰거나 props를 확장합니다. 비슷한 컴포넌트를 중복해서 만들지 않습니다.
-- 화면 틀은 `components/layout`을 씁니다. 하단 내비가 있는 화면은 `MainLayout`, 계정·마이 하위·운영 화면은 `FlowHeader`, 가입 설정은 `OnboardingHeader`, 다이얼로그는 `Dialog`.
+- 화면 틀은 `components/layout`을 씁니다. 하단 내비(모바일)·사이드바(PC)가 있는 화면은 `MainLayout`, 로그인·회원가입은 `AuthLayout`, 계정·마이 하위·운영 화면은 `FlowHeader`, 가입 설정은 `OnboardingHeader`, 다이얼로그는 `Dialog`.
 - Figma 컴포넌트와 코드의 대응표는 `docs/screens.md` 6절, 실제 모양은 개발 서버의 `/dev`에서 봅니다. 공통 컴포넌트를 추가·변경하면 `/dev`(`src/app/dev/DevCatalog.tsx`)에도 반영합니다.
 - 색·글자 크기·그림자는 `globals.css`의 토큰(`bg-paper`, `text-11`, `font-display text-display-xl`, `shadow-hard` 등)을 쓰고 hex 값을 직접 쓰지 않습니다.
 - 아이콘은 `ui/Icon`만 씁니다. 새 아이콘은 Figma에서 SVG를 내보내 `ICONS`에 경로를 추가합니다.
@@ -111,7 +111,9 @@ frontend/
 - 화면을 만들 때 `docs/screens.md`의 **4절 결정 사항**을 따릅니다. Figma와 결정 사항이 다르면 결정 사항이 우선입니다.
 - 백엔드 API에 없는 기능은 디자인에 있어도 만들지 않습니다.
 - 화면별 Figma 노드 ID, 사용하는 API, 구현 순서도 `docs/screens.md`를 봅니다.
-- **모바일 디자인을 먼저 구현합니다.** 1024px 이상 화면에서는 모바일 화면을 가운데에 모바일 폭(390px)으로 보여주고, PC 레이아웃은 나중에 합니다 (`docs/screens.md` 4-4).
+- **화면은 모바일과 PC를 같이 만듭니다.** 화면 하나를 만들 때 `docs/screens.md` 1절의 모바일·PC 노드를 둘 다 읽고, 같은 주소에서 반응형으로 만듭니다. 1024px(`lg:`) 미만은 모바일, 이상은 PC 디자인입니다 (`docs/screens.md` 4-4).
+- 모바일 전용·PC 전용 요소는 `lg:hidden` / `hidden lg:flex`처럼 나눕니다. 같은 데이터·상태는 한 컴포넌트에서 쓰고 모양만 `lg:`로 바꾸는 것을 우선합니다.
+- PC 버전이 아직 없는 화면(가입 설정 3개)만 임시로 `MobileColumn`을 씁니다. PC 버전을 만들면 걷어냅니다.
 
 ### 6. Figma 기준
 - Figma 파일: [인력사무소 디자인](https://www.figma.com/design/Q4ifVdq8v6VV66UaTYP3r9) (`Q4ifVdq8v6VV66UaTYP3r9`). 노드 ID는 `docs/screens.md`를 봅니다.

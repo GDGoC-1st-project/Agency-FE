@@ -62,7 +62,7 @@
 
 로그인 후 이동: `onboardingStep`이 `PROFILE` → 프로필 작성, `KEYWORD` → 키워드 등록, `WAITING` → 승인 대기, `DONE` → 멤버 탐색.
 
-✅ 구현됨 (2026-11-15): `/login`, `/signup`, `/`(로그인되어 있으면 `/members`, 아니면 `/login`).
+✅ 구현됨 (2026-11-15): `/login`, `/signup`, `/`(로그인되어 있으면 `/members`, 아니면 `/login`). 모바일·PC 모두 (PC는 헤더 없이 가운데 358px 열, PC 회원가입에도 "이미 계정이 있나요? 로그인" 링크를 둠 — 4-2의 ⑨).
 - 이동 경로는 `lib/routes.ts`의 `pathForOnboardingStep`. 회원가입 성공 후에는 항상 프로필 작성(`/onboarding/profile`)으로 갑니다.
 - 아직 없는 화면 주소: `/members` (지금은 404).
 - Figma 회원가입은 "가입하기" 버튼이 초대 코드 칸에 붙어 있지만, 로그인과 같게 24px 띄웠습니다.
@@ -80,7 +80,7 @@
 
 ⚠️ 온보딩 중(승인 전)에는 **프로필 수정**과 **내 키워드 조회**를 부르면 403이 납니다. 키워드 편집기는 처음엔 빈 상태로 시작해야 합니다.
 
-✅ 구현됨 (2026-11-15): `/onboarding/profile`(1/3), `/onboarding/keywords`(2/3), `/pending`(3/3). 세 화면 모두 `OnboardingHeader`를 씁니다.
+✅ 구현됨 (2026-11-15): `/onboarding/profile`(1/3), `/onboarding/keywords`(2/3), `/pending`(3/3). 세 화면 모두 `OnboardingHeader`를 씁니다. **모바일만** — PC 버전(Figma 1:584 다이얼로그, 1:604, 1:614)은 아직이고, 그동안 1024px 이상에서는 `MobileColumn`으로 가운데 모바일 폭.
 - 프로필 작성: Figma 모바일(1:287)은 Flow header지만 가입 설정 단계라 Onboarding header로 바꿨습니다. 칸 순서는 Figma대로 이름(읽기 전용) → 한 줄 소개(100자) → 역할 → 전공 → 연락처.
 - 이미 프로필을 저장한 뒤 "이전"으로 돌아오면 승인 전에는 수정할 수 없어(프로필 수정 API는 승인 필요) 칸을 잠그고 안내만 보여줍니다.
 - 키워드 등록: 편집기는 `components/ui/KeywordEditor` (마이 › 내 키워드에서도 재사용). 같은 키워드를 다른 칸에 넣는 것은 허용(백엔드 명세), 같은 칸 중복은 막습니다. 키워드는 0개여도 저장할 수 있습니다(백엔드가 빈 배열 허용).
@@ -202,11 +202,14 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | 5 | 멤버 탐색 (4-2 ⑥⑦) | 분야 필터는 **전체 · 개발(`DEV`) · AI(`AI`) · 디자인(`DESIGN`)**. "전체"는 `department`를 보내지 않는 것. 인원 수("24명", "6명의 메모")는 **뺀다**. |
 | 6 | 프로필 작성 (4-2 ⑤) | `contact` 칸 문구는 **"연락처"**로 통일한다 (모바일의 "활동 링크" 대신). |
 
-### 4-4. 구현 범위: 모바일 먼저
+### 4-4. 구현 범위: 모바일과 PC를 화면마다 같이 (2026-11-15 변경)
 
-- **모바일 디자인(390px)을 먼저 구현한다.** 1절 표의 "모바일" 열 노드를 기준으로 만든다.
-- **1024px 이상 화면에서는 모바일 화면을 가운데에 모바일 폭(390px)으로 보여준다.** 바깥 영역은 배경색만 채운다.
-- PC 레이아웃(사이드바, 다이얼로그 배치 등)은 **나중에** 한다. 지금은 PC 노드를 참고만 한다.
+- **화면마다 모바일과 PC를 같이 만든다.** 1절 표의 "모바일" 열과 "PC" 열 노드를 둘 다 보고 한 화면(같은 주소)에서 반응형으로 만든다.
+- **1024px(Tailwind `lg`) 이상에서 PC 디자인을 보여준다.** 그 미만은 모바일 디자인.
+- PC 공통 틀: 하단 내비 화면은 왼쪽 사이드바(248px) + 상단바(`AppShell`/`MainLayout`), 로그인·회원가입은 사이드바 없이 가운데 358px 열(`AuthLayout`).
+- 사이드바 "요청" 뱃지는 받은 요청 중 대기(PENDING) 개수, 프로필 바로가기의 진행률("프로필 80%")은 4-1의 9번 결정대로 넣지 않는다.
+- (이전 결정 "모바일 먼저, PC는 가운데 모바일 폭"은 폐기.) 이 결정 전에 모바일만 만든 화면(가입 설정 3개)은 PC 버전을 만들 때까지 `MobileColumn`으로 1024px 이상에서도 가운데 모바일 폭으로 보여준다.
+- 다이얼로그(`Dialog`)는 아직 모바일 시트 모양만 있다. PC 다이얼로그(Figma `Dialog/* Device=PC`)는 다이얼로그를 쓰는 화면을 만들 때 함께 만든다.
 
 ---
 
@@ -248,7 +251,11 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Navigation/Flow Header | `components/layout/FlowHeader` | `backHref` 없으면 브라우저 뒤로 |
 | Navigation/Onboarding Header | `components/layout/OnboardingHeader` | `step`으로 "가입 설정 n/3" |
 | Dialog/* (Mobile) + Overlay/Scrim · Mobile | `components/layout/Dialog` | 아래에서 올라오는 시트, Esc·배경 클릭으로 닫힘 |
-| (Top + Bottom 묶음) | `components/layout/MainLayout` | 멤버·모집·요청·채팅·마이 화면 틀 |
+| Navigation/Sidebar · Sidebar Item · Profile Shortcut, Note/Daily (PC) | `components/layout/Sidebar` | 요청 뱃지 = 받은 요청 대기 개수, 진행률 없음 |
+| Navigation/Top Bar (PC) | `components/layout/PcTopBar` | 현재 메뉴 이름 + 한 줄 설명 |
+| (모바일 Top·Bottom + PC Sidebar·Top 묶음) | `components/layout/AppShell` (그리기만) / `MainLayout` (뱃지·이름을 불러옴) | 멤버·모집·요청·채팅·마이 화면 틀 |
+| PC · 계정 · 로그인/회원가입 틀 | `components/layout/AuthLayout` | 모바일 Flow header, PC 가운데 358px 열 |
+| (임시) | `components/layout/MobileColumn` | PC 버전이 아직 없는 화면을 1024px 이상에서 가운데 모바일 폭으로 |
 | Button/Primary · Secondary · Outline | `ui/Button` (`variant`) | 5절 통일 결과 적용 |
 | Button/Text Link | `ui/Button`의 `TextButton` | |
 | Button/Icon · Button/Icon Utility | `ui/Button`의 `IconButton` | `round`(닫기) / `plain`(뒤로) |
@@ -267,7 +274,7 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Page Intro · Intro/Flow | `ui/PageIntro` (`variant` main / flow) | |
 | Feedback/State | `ui/StateMessage` | empty / error |
 | Onboarding/Progress | `ui/ProgressBar` | |
-| Brand/Logo | `ui/Logo` | mobile / onboarding |
+| Brand/Logo | `ui/Logo` | mobile / onboarding / pc |
 | Icon (+ 아바타·하단 내비 아이콘) | `ui/Icon` | Figma에서 내보낸 SVG 경로, 색은 `text-*` |
 
 디자인 토큰(색·글꼴·글자 크기·그림자·폭)은 `src/app/globals.css`의 `@theme`에 있습니다. 예: `bg-paper`, `text-muted`, `text-11`, `font-display text-display-xl`, `shadow-hard`, `max-w-mobile`.

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { BottomNav } from "@/components/layout/BottomNav";
+import { AppShell } from "@/components/layout/AppShell";
 import { Dialog } from "@/components/layout/Dialog";
 import { FlowHeader } from "@/components/layout/FlowHeader";
 import { OnboardingHeader } from "@/components/layout/OnboardingHeader";
+import { PcTopBar } from "@/components/layout/PcTopBar";
+import { Sidebar } from "@/components/layout/Sidebar";
 import { TopNav } from "@/components/layout/TopNav";
 import { Avatar, toneFor } from "@/components/ui/Avatar";
 import { CountBadge } from "@/components/ui/Badge";
@@ -79,12 +81,12 @@ export function DevCatalog() {
 
   return (
     <>
-      <TopNav />
-      <main className="flex flex-col gap-8 px-4 pt-8.5 pb-28.5">
+      <AppShell requestCount={3} userName="강민지">
+      <div className="flex flex-col gap-8">
         <PageIntro
           eyebrow="DESIGN SYSTEM"
           title="컴포넌트 모음"
-          description="docs/screens.md 기준 모바일 공통 레이아웃과 components/ui 입니다. 개발 모드에서만 열립니다."
+          description="docs/screens.md 기준 모바일·PC 공통 레이아웃과 components/ui 입니다. 1024px 이상에서 PC 레이아웃으로 바뀝니다. 개발 모드에서만 열립니다."
         />
 
         <Section title="색 (Tailwind: bg-* / text-* / border-*)">
@@ -274,11 +276,26 @@ export function DevCatalog() {
         </Section>
 
         <Section title="레이아웃 (TopNav · FlowHeader · OnboardingHeader · BottomNav)">
-          <p className="text-10 text-muted">실제 화면에서는 위에 고정됩니다. 하단 내비는 이 페이지 맨 아래에 실제로 붙어 있습니다.</p>
+          <p className="text-10 text-muted">실제 화면에서는 위에 고정됩니다. 하단 내비는 1024px 미만에서 이 페이지 맨 아래에 실제로 붙어 있습니다. TopNav는 1024px 이상에서 숨습니다.</p>
           <div className="-mx-4 flex flex-col gap-3 [&_header]:static">
             <TopNav />
             <FlowHeader title="프로필 작성" />
             <OnboardingHeader step={2} />
+          </div>
+        </Section>
+
+        <Section title="PC 레이아웃 (Sidebar · PcTopBar · AppShell)">
+          <p className="text-10 text-muted">
+            1024px 이상에서는 이 페이지 왼쪽에 실제 사이드바가 붙어 있습니다. 아래는 미리보기입니다. 요청 뱃지는 받은 요청 중 대기 개수(여기서는 예시 3), 프로필 진행률은 결정대로 뺐습니다.
+          </p>
+          <div className="overflow-x-auto border border-line">
+            <div className="flex w-max">
+              <Sidebar preview requestCount={3} userName="강민지" />
+              <div className="w-[640px] bg-canvas">
+                <PcTopBar preview />
+                <p className="px-18 pt-14 text-12 text-muted">본문 (좌우 여백 72px)</p>
+              </div>
+            </div>
           </div>
         </Section>
 
@@ -287,7 +304,8 @@ export function DevCatalog() {
             거절 사유 다이얼로그 열기
           </Button>
         </Section>
-      </main>
+      </div>
+      </AppShell>
 
       <Dialog
         open={dialogOpen}
@@ -309,7 +327,6 @@ export function DevCatalog() {
         </Field>
       </Dialog>
 
-      <BottomNav />
     </>
   );
 }

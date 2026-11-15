@@ -23,6 +23,7 @@
   --color-yellow-soft: #fff5ae;
   --color-blue: #a9d6e5;
   --color-blue-soft: #d4ecf3;
+  --color-blue-faint: #eef8fb; /* PC 사이드바 "오늘의 메모" */
   --color-pink: #ffb3c6;
   --color-pink-soft: #ffd2dd;
   --color-green: #b8e986;
@@ -86,13 +87,16 @@
   --shadow-hard: 4px 4px 0 0 var(--color-ink); /* 주요 버튼 */
   --shadow-hard-md: 3px 3px 0 0 var(--color-ink); /* 요청 카드, 온보딩 로고 */
   --shadow-hard-sm: 2px 2px 0 0 var(--color-ink); /* 상단 로고 */
+  --shadow-logo: 4px 5px 0 0 var(--color-ink); /* PC 사이드바 로고 */
   --shadow-paper: 0 2px 4px 0 rgb(48 45 34 / 0.06), 0 12px 30px 0 rgb(48 45 34 / 0.09); /* 메모 카드 */
   --shadow-search: 5px 6px 0 0 var(--color-blue); /* 검색창 */
   --shadow-sheet: 0 -6px 0 0 var(--color-ink); /* 모바일 다이얼로그 */
   --shadow-dot: 0 2px 3px 0 rgb(0 0 0 / 0.25); /* 로고 점 */
 
   /* ── 폭 ── */
-  --container-mobile: 390px; /* 모바일 디자인 폭. 1024px 이상에서 이 폭으로 가운데 표시 */
+  --container-mobile: 390px; /* 모바일 디자인 폭. PC 디자인이 아직 없는 화면을 1024px 이상에서 가운데 이 폭으로 표시 */
+  --container-form: 358px; /* 로그인·회원가입 PC 가운데 열 */
+  --spacing-sidebar: 248px; /* PC 사이드바 폭 (w-sidebar, pl-sidebar) */
 }
 
 @layer base {
