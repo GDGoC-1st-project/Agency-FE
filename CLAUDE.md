@@ -38,6 +38,7 @@ frontend/
     │   │   └── mock/           # 가짜 데이터 모드 (index.ts: 가짜 응답 라우트, data.ts: 초기 데이터)
     │   ├── auth/token.ts   # accessToken / refreshToken 저장·삭제
     │   ├── routes.ts       # 화면 경로 상수 (ROUTES)
+    │   ├── datetime.ts     # API 날짜 → "오후 2:14" · "어제" · "오늘" 같은 화면 문구
     │   └── cn.ts           # className 합치기
     └── types/api.ts        # docs/api-list.md 기준 요청·응답 타입
 ```

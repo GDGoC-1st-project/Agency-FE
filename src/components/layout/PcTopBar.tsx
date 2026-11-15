@@ -10,9 +10,9 @@ import { isActive, NAV_ITEMS } from "./navItems";
  * Figma Navigation/Top Bar (PC): 현재 메뉴 이름 + 한 줄 설명, 오른쪽 내 아바타(마이로 이동). 높이 74.
  * 1024px 미만에서는 숨고 모바일 TopNav를 씁니다.
  */
-export function PcTopBar({ preview = false }: { preview?: boolean }) {
+export function PcTopBar({ preview = false, title: titleOverride }: { preview?: boolean; /** 없으면 현재 메뉴 이름 */ title?: string }) {
   const pathname = usePathname();
-  const title = NAV_ITEMS.find((item) => isActive(pathname, item.href))?.label ?? "인력사무소";
+  const title = titleOverride ?? NAV_ITEMS.find((item) => isActive(pathname, item.href))?.label ?? "인력사무소";
 
   return (
     <header

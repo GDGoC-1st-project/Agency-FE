@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { getMe, getReceivedRequests } from "@/lib/api";
-import { AppShell } from "./AppShell";
+import { AppShell, type ShellOptions } from "./AppShell";
 import { RequestCountContext } from "./RequestCountContext";
 
 /**
@@ -12,8 +12,9 @@ import { RequestCountContext } from "./RequestCountContext";
  *   화면에서는 `useRequestCount()`로 숫자를 읽고, 수락·거절하면 `decrease()`로 바로 줄입니다.
  * - 사이드바 프로필 바로가기: 내 이름
  * 둘 다 실패해도 화면은 그대로 보여줍니다 (뱃지·이름만 비움).
+ * 모바일 머리글 바꾸기·채팅방처럼 모바일 틀 빼기·PC 상단바 제목은 `ShellOptions`(AppShell)로 넘깁니다.
  */
-export function MainLayout({ children }: { children: ReactNode }) {
+export function MainLayout({ children, ...shell }: ShellOptions & { children: ReactNode }) {
   const pathname = usePathname();
   const [requestCount, setRequestCount] = useState(0);
   const [userName, setUserName] = useState<string | null>(null);
@@ -50,7 +51,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
 
   return (
     <RequestCountContext.Provider value={value}>
-      <AppShell requestCount={requestCount} userName={userName}>
+      <AppShell requestCount={requestCount} userName={userName} {...shell}>
         {children}
       </AppShell>
     </RequestCountContext.Provider>

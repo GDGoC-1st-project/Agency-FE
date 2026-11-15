@@ -10,7 +10,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { TopNav } from "@/components/layout/TopNav";
 import { Avatar, toneFor } from "@/components/ui/Avatar";
 import { CountBadge } from "@/components/ui/Badge";
-import { Button, IconButton, TextButton } from "@/components/ui/Button";
+import { Button, ButtonLink, IconButton, TextButton } from "@/components/ui/Button";
 import { BoxCard, LinkCard, MoreLabel, NoteCard, noteToneAt } from "@/components/ui/Card";
 import { FilterChip, KeywordChip, KeywordTag } from "@/components/ui/Chip";
 import { Icon, ICON_NAMES } from "@/components/ui/Icon";
@@ -131,7 +131,7 @@ export function DevCatalog() {
           </div>
         </Section>
 
-        <Section title="버튼 (Button · TextButton · IconButton)">
+        <Section title="버튼 (Button · ButtonLink · TextButton · IconButton)">
           <div className="flex flex-wrap gap-3">
             <Button>수락하기</Button>
             <Button variant="secondary">다음에</Button>
@@ -147,6 +147,7 @@ export function DevCatalog() {
             <Button>다음</Button>
           </div>
           <div className="flex items-center gap-3">
+            <ButtonLink href="/dev">채팅하기 (ButtonLink)</ButtonLink>
             <TextButton>이미 계정이 있나요? 로그인</TextButton>
             <IconButton icon="close" label="닫기" variant="round" />
             <IconButton icon="back" label="뒤로 가기" />

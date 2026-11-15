@@ -19,6 +19,10 @@
   --color-line-strong: #cbc9bf; /* 입력창 테두리 */
   --color-hover: #f3f1e9; /* 호버 바탕 */
   --color-kbd: #f1f0eb; /* PC 검색창 "검색" 키 */
+  --color-panel: #fbfaf5; /* 채팅 목록 패널 바탕 */
+  --color-divider: #ecebe4; /* 채팅 목록 줄 사이 선 */
+  --color-chip: #eeede7; /* 채팅 날짜 구분 ("오늘") */
+  --color-field: #f8f7f2; /* 채팅 입력창 바탕 */
   --color-yellow: #ffe66d; /* color/accent/yellow: 주요 버튼, 로고 */
   --color-yellow-soft: #fff5ae;
   --color-blue: #a9d6e5;
@@ -36,6 +40,8 @@
   --font-display: var(--font-black-han-sans), "Black Han Sans", var(--font-noto-sans-kr), sans-serif;
 
   /* ── 글자 크기 (Noto Sans KR, 이름 = px) ── */
+  --text-8: 8px; /* 채팅 목록 시간 */
+  --text-8--line-height: 12px;
   --text-9: 9px;
   --text-9--line-height: 13.5px;
   --text-10: 10px;
@@ -72,6 +78,8 @@
   --text-display-sm: 23px; /* 카드 이름 */
   --text-display-sm--line-height: 34.5px;
   --text-display-sm--letter-spacing: -0.7px;
+  --text-display-panel: 25px; /* 채팅 목록 "메시지" 제목 */
+  --text-display-panel--line-height: 37.5px;
   --text-display-xs: 22px; /* 모집 카드 제목 */
   --text-display-xs--line-height: 29.7px;
   --text-display-xs--letter-spacing: -0.8px;

@@ -53,6 +53,26 @@ export function Button({
   );
 }
 
+/** Button과 같은 모양의 링크 (다른 화면으로 이동할 때. 예: 연결 동료의 "채팅하기") */
+export function ButtonLink({
+  variant = "primary",
+  fullWidth = false,
+  className,
+  ...rest
+}: ComponentProps<typeof Link> & { variant?: Variant; fullWidth?: boolean }) {
+  return (
+    <Link
+      className={cn(
+        "inline-flex h-11 shrink-0 items-center justify-center gap-2 px-4.5 text-12 font-bold text-ink transition-colors",
+        fullWidth && "w-full",
+        VARIANT[variant],
+        className,
+      )}
+      {...rest}
+    />
+  );
+}
+
 const TEXT_LINK = "p-2.5 text-11 text-muted underline underline-offset-2 transition-colors hover:text-ink";
 
 /** Figma Button/Text Link 모양의 버튼 */

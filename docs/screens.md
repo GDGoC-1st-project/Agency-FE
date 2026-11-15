@@ -136,7 +136,7 @@
 - 카드: Figma의 직무·키워드 태그는 요청 API에 없어 뺐습니다. 이름 옆에 요청 종류("같이 해요 · 프로젝트" / "모집 글 지원"), 본문은 제안 메시지 또는 "「모집 글 제목」 모집 글에 지원했어요."
 - 받은 요청: 목록은 상태 상관없이 최신순. 대기 중이면 "다음에"(거절 사유 다이얼로그) · "수락하기", 처리된 요청은 버튼 대신 "수락했어요"/"거절했어요".
 - 수락: 수락 API → 받은 `chatRoomId`로 `/chats/{chatRoomId}` 이동 (`ROUTES.chatRoom`, 채팅 화면은 7단계에서 만듦).
-- 거절 사유 다이얼로그: API가 사유 종류(`reasonType`)를 필수로 받아 Figma의 글 상자 위에 사유 칩(일정·방향·모집 종료·기타)을 추가했습니다. 글 상자는 "기타"일 때만 필수.
+- 거절 사유 다이얼로그: API가 사유 종류(`reasonType`)를 필수로 받아 Figma의 글 상자 위에 사유 칩을 추가했습니다. 값은 api-list.md의 `SCHEDULE`·`NOT_MATCHED`·`CLOSED`·`ETC` 4개와 같고, 이름은 BACKEND_SPEC.md 설명(일정 불가 / 관심사 불일치 / 모집 마감 / 기타)에 맞춘 "일정이 맞지 않아요 / 관심사가 맞지 않아요 / 모집이 끝났어요 / 기타"입니다. 글 상자는 "기타"일 때만 필수.
 - 수락·거절하면 사이드바 뱃지와 탭 숫자를 바로 하나 줄입니다 (`MainLayout`이 주는 `useRequestCount()`). 이미 처리된 요청(`REQUEST409`)이면 목록과 뱃지를 다시 불러옵니다.
 - 보낸 요청: 오른쪽(모바일은 아래)에 "응답 대기 중"/"수락됐어요"/"거절됐어요". 거절됐으면 본문 아래에 거절 사유와 상세를 보여줍니다. 모바일 보낸 요청 Figma(1:230)는 받은 요청을 그대로 복사한 상태라 PC(1:528) 모양을 따랐습니다.
 
@@ -146,6 +146,19 @@
 | 채팅 목록 | **채팅방 목록** `GET /chatrooms` (`unreadCount` 뱃지) |
 | 1:1 채팅 | **채팅방 상세** `GET /chatrooms/{id}` (`contextCard`), **메시지 목록** `GET .../messages` (커서 방식, 최신부터), **메시지 전송** `POST .../messages`, **읽음 처리** `PATCH .../read`, WebSocket (`message.new`, `message.read` 수신 전용) |
 | 📎 연결 동료 | **내 연결 목록** `GET /connections` (`chatRoomId`로 채팅방 이동) |
+
+✅ 구현됨 (2026-11-15): `/chats`(채팅 목록), `/chats/{chatRoomId}`(1:1 채팅), `/my/connections`(연결 동료), 모바일·PC 모두. **실시간 수신(WebSocket)은 아직 없음** — 8절 "남은 작업" 1번.
+- 화면 구성: 목록은 `app/chats/layout`에 있어서 PC에서 방을 바꿔도 목록을 다시 그리지 않습니다.
+  - PC: 왼쪽 목록(340) + 오른쪽 채팅방 (Figma 1:559, 1120×590). `/chats`면 오른쪽에 "대화할 동료를 골라 주세요".
+  - 모바일: 목록(`/chats`)과 채팅방(`/chats/{id}`)을 **따로** 둡니다. Figma 모바일(1:257)은 위에 아바타 줄 + 아래 채팅방이 한 화면이지만, 목록은 PC 목록 줄 모양을 쓰고, 채팅방은 1:267처럼 하단 내비 없이 머리글에 뒤로가기(→ 목록)를 붙였습니다.
+- 채팅 목록: 마지막 메시지 · 시간("오후 2:14" / "어제" / "월요일" / "10월 5일") · 안 읽은 숫자(분홍 뱃지). 방을 열어 읽음 처리하면 그 숫자를 바로 지우고, 메시지를 보내면 그 방을 맨 위로 올립니다.
+- 1:1 채팅:
+  - 메시지는 최신 30개부터 불러오고, 위로 올리면(또는 "이전 메시지 보기") `nextCursor`로 이전 메시지를 붙이며 보던 자리를 유지합니다.
+  - 불러오면 가장 최신 메시지 id로 읽음 처리합니다.
+  - 보낸 메시지는 전송 API 응답(`messageId`, `content`, `createdAt`)으로 맨 아래에 추가합니다. 차단 관계(`CHAT403`)면 입력창 아래에 안내.
+  - Figma에 없지만 API에 있는 것: 날짜 구분("오늘" 외 "어제", "11월 10일 화요일"), 말풍선 옆 시간, 내 메시지의 "읽음/안 읽음"(`isRead`), 대화 맨 처음의 연결 계기 카드(`contextCard`: "같이 해요 제안으로 연결됐어요 / 스터디 / 제안 메시지").
+  - 첨부(+) 버튼은 4-1의 10번 결정대로 넣지 않았습니다.
+- 연결 동료 (Figma 1:313, 1:651): 모바일 머리글은 Flow Header "내 연결", PC 상단바 제목은 "연결 동료"(사이드바는 "마이" 선택). 카드는 아바타 · 이름 · 분야(4-2의 ⑧대로 "DEV" 대신 개발/AI/디자인) · "채팅하기"(→ `/chats/{chatRoomId}`). Figma 카드 아래 빈 곳에는 API가 주는 전공과 대표 키워드를 넣었습니다. 마이 화면이 아직 없어 들어오는 링크는 없고 주소(`/my/connections`)로만 열 수 있습니다.
 
 ### 8단계 · 운영 관리 (`role=ADMIN`만)
 | 화면 | API |
@@ -284,9 +297,9 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | (멤버 프로필 "…" 메뉴) | `ui/Menu`의 `MoreMenu` | 아이콘은 Figma Icon 세트에 없어 점 세 개(`more`)로 그림 |
 | Navigation/Sidebar · Sidebar Item · Profile Shortcut, Note/Daily (PC) | `components/layout/Sidebar` | 요청 뱃지 = 받은 요청 대기 개수, 진행률 없음 |
 | Navigation/Top Bar (PC) | `components/layout/PcTopBar` | 현재 메뉴 이름 + 한 줄 설명 |
-| (모바일 Top·Bottom + PC Sidebar·Top 묶음) | `components/layout/AppShell` (그리기만) / `MainLayout` (뱃지·이름을 불러옴) | 멤버·모집·요청·채팅·마이 화면 틀 |
+| (모바일 Top·Bottom + PC Sidebar·Top 묶음) | `components/layout/AppShell` (그리기만) / `MainLayout` (뱃지·이름을 불러옴) | 멤버·모집·요청·채팅·마이 화면 틀. `mobileHeader`(모바일 머리글 바꾸기, 예: 마이 하위 Flow Header), `mobileBare`(모바일 틀 없이, 예: 채팅방), `pcTitle`(PC 상단바 제목) |
 | PC · 계정 · 로그인/회원가입 틀 | `components/layout/AuthLayout` | 모바일 Flow header, PC 가운데 358px 열 |
-| Button/Primary · Secondary · Outline | `ui/Button` (`variant`) | 5절 통일 결과 적용 |
+| Button/Primary · Secondary · Outline | `ui/Button` (`variant`), 링크 모양은 `ButtonLink` | 5절 통일 결과 적용 |
 | Button/Text Link | `ui/Button`의 `TextButton` | |
 | Button/Icon · Button/Icon Utility | `ui/Button`의 `IconButton` | `round`(닫기) / `plain`(뒤로) |
 | Input/Text · Password · Email, Field/* | `ui/Input`의 `Input`, `Field`, `TextField` | `size`: auth(50px) / dialog(43px) |
@@ -301,6 +314,7 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | Tab/Request | `ui/Tabs` | 모바일은 반씩, PC는 탭마다 150px |
 | Card/Member · Card/Recruit 바탕, Decor/Tape | `ui/Card`의 `NoteCard`, `Tape`, `noteToneAt` | 카드 내용은 화면에서 조립 |
 | Card/Request | `ui/Card`의 `BoxCard` | |
+| Chat/List Panel · List Item · Header · Bubble · Date Divider · Composer | `app/chats`의 `ChatList`, `ChatRoom` (채팅 화면 전용) | 첨부(+) 버튼 없음 (4-1의 10번) |
 | Card/Management Link · Card/Admin Action | `ui/Card`의 `LinkCard` | |
 | Page Intro · Intro/Flow | `ui/PageIntro` (`variant` main / flow) | |
 | Feedback/State | `ui/StateMessage` | empty / error |
@@ -319,3 +333,13 @@ Figma가 아직 결정 사항과 다르면 **결정 사항대로 만듭니다** 
 | # | 화면 | 문제 | 지금 처리 | 해결 방법 |
 | --- | --- | --- | --- | --- |
 | 1 | 모집 글 수정 (5단계) | 모집글 상세 API(`GET /posts/{postId}`)가 키워드를 **이름으로만**(`keywords: string[]`) 줘서, 수정 API에 보낼 `keywordIds`를 바로 알 수 없음 | 수정 다이얼로그를 열 때 키워드 검색 API로 이름이 똑같은 키워드를 찾아 id를 되살림 (`RecruitComposeDialog`의 `resolveKeywords`). 키워드마다 검색을 한 번씩 부르고, 못 찾은 키워드는 빠지며 안내 문구를 보여줌 | 백엔드가 상세 응답에 키워드 id를 같이 주면(예: `keywords: { keywordId, name }[]`) 그 값을 바로 채우고 다시 찾는 코드를 지움 |
+
+---
+
+## 8. 남은 작업
+
+다른 사람이 맡았거나 다음 단계에서 붙일 일입니다.
+
+| # | 작업 | 담당 | 붙일 자리 | 할 일 |
+| --- | --- | --- | --- | --- |
+| 1 | 채팅 실시간 수신 (WebSocket) | 팀원 | `src/app/chats/ChatRoom.tsx`의 "실시간 수신 자리" 주석 | `connectChatSocket(chatRoomId, onEvent)`(`@/lib/api`, 가짜 모드도 지원)를 `useEffect`에서 연결하고 정리 함수로 닫기. `message.new` → `prependMessage`로 추가 + `markAsRead` + 목록 `markRead`, `message.read` → `applyReadReceipt`로 내 메시지 읽음 표시 (`src/app/chats/chatMessages.ts`). 상대가 보낸 새 메시지로 **채팅 목록**의 마지막 메시지·안 읽은 숫자도 바뀌어야 하는데, 열려 있지 않은 방의 이벤트는 받을 수 없으므로(방마다 연결) 목록은 화면에 들어올 때 다시 불러오는 지금 방식을 유지하거나 주기적으로 새로 고침 |

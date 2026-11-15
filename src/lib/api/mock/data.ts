@@ -210,6 +210,7 @@ export const requests: MockRequest[] = [
   { requestType: "APPLICATION", requestId: 2, senderId: ME_ID, receiverId: 4, reasonType: null, message: null, postId: 1, status: "ACCEPTED", rejectReason: null, createdAt: timeAgo(4 * DAY) },
   { requestType: "APPLICATION", requestId: 3, senderId: ME_ID, receiverId: 3, reasonType: null, message: null, postId: 2, status: "PENDING", rejectReason: null, createdAt: timeAgo(5 * HOUR) },
   { requestType: "PROPOSAL", requestId: 5, senderId: ME_ID, receiverId: 8, reasonType: "HOBBY", message: "데이터 시각화 같이 해 보실래요?", postId: null, status: "REJECTED", rejectReason: { type: "ETC", detail: "이번 학기에는 시간이 부족해요." }, createdAt: timeAgo(6 * DAY) },
+  { requestType: "PROPOSAL", requestId: 6, senderId: 9, receiverId: ME_ID, reasonType: "STUDY", message: "임베디드 스터디를 같이 꾸려 보고 싶어요. 매주 한 번 모여요!", postId: null, status: "ACCEPTED", rejectReason: null, createdAt: timeAgo(6 * DAY) },
 ];
 
 // ───────────────────────── 연결 · 채팅 ─────────────────────────
@@ -259,6 +260,17 @@ export const chatRooms: MockChatRoom[] = [
       { messageId: 5, senderId: 4, content: "와이어프레임 링크 전달드릴게요.", createdAt: timeAgo(3 * DAY) },
     ],
     myLastRead: 5, otherLastRead: 0,
+  },
+  {
+    // 이전 메시지 불러오기(커서)를 눌러 볼 수 있도록 메시지가 많은 방 (45개, 5일 전부터)
+    chatRoomId: 4, connectionId: 4, memberId: 9, source: { requestType: "PROPOSAL", requestId: 6 }, connectedAt: timeAgo(5 * DAY + 60),
+    messages: Array.from({ length: 45 }, (_, i) => ({
+      messageId: 101 + i,
+      senderId: i % 3 === 0 ? ME_ID : 9,
+      content: i % 3 === 0 ? `${i + 1}번째 메시지: 이번 주 스터디 범위 정리해 둘게요.` : `${i + 1}번째 메시지: 좋아요, 회로도는 제가 준비할게요.`,
+      createdAt: timeAgo(5 * DAY - i * 150),
+    })),
+    myLastRead: 140, otherLastRead: 139,
   },
 ];
 
