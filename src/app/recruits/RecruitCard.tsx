@@ -22,7 +22,7 @@ export function RecruitCard({ post, index, onOpen }: { post: PostListItem; index
       className="block h-full w-full text-left transition-transform hover:-translate-y-1 focus-visible:-translate-y-1"
     >
       <NoteCard tone={tone} tape={TAPE_FOR[tone]} className="flex h-full min-h-71.25 flex-col px-7.5 pt-9 pb-6">
-        <p className="pt-1.75 pb-5 text-9 text-muted">{post.authorName} 작성</p>
+        <p className="pt-1.75 pb-5 text-12 text-muted">{post.authorName} 작성</p>
         <h3 className="font-display text-display-xs text-ink">{post.title}</h3>
         <div className="py-3.5">
           <p className="line-clamp-2 text-11 leading-[18.7px] text-note">{post.descriptionPreview}</p>
