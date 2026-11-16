@@ -179,7 +179,7 @@ export function ProfileForm({ mode = "onboarding", frame = "card", onSaved }: Pr
         <div className="order-1">
           <p className="flex gap-2 text-13 text-ink lg:hidden">
             <span>이름</span>
-            <span>{me.name}</span>
+            <span className="font-semibold">{me.name}</span>
           </p>
           <Field label="이름" htmlFor={nameId} className="hidden lg:flex">
             <Input id={nameId} size="dialog" readOnly value={me.name} className="bg-hover" />

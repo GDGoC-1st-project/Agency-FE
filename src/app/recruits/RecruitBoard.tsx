@@ -70,7 +70,7 @@ export function RecruitBoard() {
     <div className="flex flex-col">
       <PageIntro
         title="함께할 멤버를 찾아요"
-        description="마음 가는 공고를 열어보고, 내 자리를 찾아보세요."
+        description="마음 가는 모집 메모를 열어보세요."
         action={
           <Button icon="plus" onClick={openCompose} aria-label="모집 글 쓰기" className="max-lg:w-11.5 max-lg:px-3">
             <span className="hidden lg:inline">모집 글 쓰기</span>

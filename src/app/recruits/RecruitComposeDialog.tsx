@@ -138,7 +138,7 @@ export function RecruitComposeDialog({ post, onClose, onSaved }: Props) {
       open
       onClose={onClose}
       title={editing ? "모집 메모 고치기" : "새 모집 메모 붙이기"}
-      description="부담 없이 적어도 괜찮아요. 필요한 내용만 또렷하게 알려주세요."
+      description="GDGoC 멤버와 함께하고 싶은 프로젝트에 대해 알려주세요."
     >
       <form noValidate onSubmit={submit} className="flex flex-col gap-4 pt-3">
         <Field label="제목" htmlFor={titleId} error={errors.title}>
