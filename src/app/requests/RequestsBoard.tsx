@@ -138,8 +138,8 @@ export function RequestsBoard() {
   return (
     <div className="flex flex-col">
       <PageIntro
-        title="도착한 연결 요청을 확인해요"
-        description="한 번의 수락이 멋진 팀의 시작이 될 수 있어요."
+        title={tab === "received" ? "도착한 요청을 확인해요" : "보낸 요청을 확인해요"}
+        description={tab === "received" ? "한 번의 수락이 멋진 팀의 시작이 될 수 있어요." : undefined}
       />
 
       <div className="pt-7.5">
