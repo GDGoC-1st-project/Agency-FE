@@ -140,10 +140,7 @@ export function RequestsBoard() {
       <PageIntro
         title={tab === "received" ? "도착한 요청을 확인해요" : "보낸 요청을 확인해요"}
         description={
-          // 보낸 요청 탭에서도 같은 높이를 차지하게 두어 탭을 오갈 때 아래 탭 위치가 움직이지 않게 합니다.
-          <span className={tab === "received" ? undefined : "invisible"} aria-hidden={tab === "received" ? undefined : true}>
-            한 번의 수락이 멋진 팀의 시작이 될 수 있어요.
-          </span>
+          tab === "received" ? "한 번의 수락이 멋진 팀의 시작이 될 수 있어요." : "먼저 건넨 한마디가 멋진 팀의 시작이 될 수 있어요."
         }
       />
 
