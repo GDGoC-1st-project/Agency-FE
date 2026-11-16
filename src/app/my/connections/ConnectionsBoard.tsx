@@ -97,17 +97,19 @@ export function ConnectionsBoard() {
                           {DEPARTMENT_LABEL[c.member.department]}
                         </span>
                       </div>
-                      <ButtonLink href={ROUTES.chatRoom(c.chatRoomId)} aria-label={`${c.member.name} 님과 채팅하기`} fullWidth>
-                        채팅하기
-                      </ButtonLink>
-                      {c.member.major && <p className="pt-4 text-11 text-note">{c.member.major}</p>}
+                      {c.member.major && <p className="pt-3 text-11 text-note">{c.member.major}</p>}
                       {c.keywords.length > 0 && (
-                        <div className="flex flex-wrap gap-1.25 pt-2.5">
+                        <div className="flex flex-wrap gap-1.25 pt-3">
                           {c.keywords.map((k) => (
                             <KeywordTag key={k} name={k} />
                           ))}
                         </div>
                       )}
+                      <div className="mt-auto pt-5">
+                        <ButtonLink href={ROUTES.chatRoom(c.chatRoomId)} aria-label={`${c.member.name} 님과 채팅하기`} fullWidth>
+                          채팅하기
+                        </ButtonLink>
+                      </div>
                     </NoteCard>
                   </li>
                 );
