@@ -239,9 +239,9 @@ export function ChatRoom() {
             {nextCursor === null && card && (
               <div className="mx-auto mb-6 max-w-90 border border-line bg-white px-4 py-3 text-center">
                 <p className="text-9 font-bold tracking-eyebrow text-eyebrow">
-                  {card.sourceType === "PROPOSAL" ? "같이 해요 제안으로 연결됐어요" : "모집 글 지원으로 연결됐어요"}
+                  {card.sourceType === "PROPOSAL" ? "같이 해요 제안으로 연결" : "모집 글 지원으로 연결"}
                 </p>
-                <p className="pt-1 text-11 font-bold text-ink">{card.title}</p>
+                <p className="pt-3 text-11 font-bold text-ink">{card.title}</p>
                 {card.content && <p className="line-clamp-3 pt-0.5 text-10 whitespace-pre-line text-muted">{card.content}</p>}
               </div>
             )}
