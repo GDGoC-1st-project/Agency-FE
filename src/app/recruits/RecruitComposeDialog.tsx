@@ -137,7 +137,6 @@ export function RecruitComposeDialog({ post, onClose, onSaved }: Props) {
     <Dialog
       open
       onClose={onClose}
-      eyebrow={editing ? "EDIT RECRUIT NOTE" : "NEW RECRUIT NOTE"}
       title={editing ? "모집 메모 고치기" : "새 모집 메모 붙이기"}
       description="부담 없이 적어도 괜찮아요. 필요한 내용만 또렷하게 알려주세요."
     >
@@ -147,7 +146,7 @@ export function RecruitComposeDialog({ post, onClose, onSaved }: Props) {
             id={titleId}
             size="dialog"
             maxLength={TITLE_MAX}
-            placeholder="어떤 팀원을 찾고 있나요?"
+            placeholder="어떤 멤버를 찾고 있나요?"
             value={title}
             disabled={saving}
             onChange={(e) => {

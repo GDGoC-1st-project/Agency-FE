@@ -6,7 +6,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { FormCard, LinkCard } from "@/components/ui/Card";
 import { KeywordTag } from "@/components/ui/Chip";
-import { Eyebrow, PageIntro } from "@/components/ui/PageIntro";
+import { PageIntro } from "@/components/ui/PageIntro";
 import { ProfileForm } from "@/components/ui/ProfileForm";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { getErrorMessage, getMe, getMyKeywords } from "@/lib/api";
@@ -85,7 +85,7 @@ export function MyDesk() {
 
   return (
     <div className="flex flex-col">
-      <PageIntro eyebrow="MY DESK" title="나의 작업 책상" description="내 소개와 연결 현황을 한눈에 관리해요." action={editAction} />
+      <PageIntro title="나의 작업 책상" description="내 소개와 연결 현황을 한눈에 관리해요." action={editAction} />
 
       {notice && (
         <p role="status" className="mt-5 border border-line bg-paper px-4 py-3 text-11 text-ink">
@@ -109,8 +109,7 @@ export function MyDesk() {
               <div className="flex flex-col items-center gap-5.5 text-center lg:flex-row lg:text-left">
                 <Avatar size="lg" />
                 <div className="flex flex-col">
-                  <Eyebrow>MY PROFILE</Eyebrow>
-                  <h2 className="pt-1 font-display text-display-md text-ink">{me.name}</h2>
+                  <h2 className="font-display text-display-md text-ink">{me.name}</h2>
                   <p className="text-11 text-muted">
                     {[me.department && DEPARTMENT_LABEL[me.department], me.major].filter(Boolean).join(" · ")}
                   </p>
@@ -146,7 +145,7 @@ export function MyDesk() {
               <p className="pt-1.5 text-11 text-muted">{isAdmin ? "키워드와 연결, 운영 상태를 관리해요" : "키워드와 연결을 관리해요"}</p>
               <div className="flex flex-col gap-3.5 pt-5">
                 <LinkCard href={ROUTES.myKeywords} icon="key" title="내 키워드" description="잘하는 일과 관심사를 수정해요" tone="yellow" />
-                <LinkCard href={ROUTES.myConnections} icon="members" title="내 연결" description="연결된 동료를 한눈에 확인해요" tone="blue" />
+                <LinkCard href={ROUTES.myConnections} icon="members" title="내 연결" description="연결된 멤버를 한눈에 확인해요" tone="blue" />
                 {isAdmin && <LinkCard href={ROUTES.admin} icon="shield" title="운영 관리" description="가입 승인과 신고를 처리해요" tone="green" />}
                 {/* Figma에 없는 카드: 승인된 사용자가 로그아웃할 곳이 없어 추가 (아이콘은 Figma 세트의 뒤로가기 화살표) */}
                 <LinkCard onClick={logout} icon="back" title="로그아웃" description="이 기기에서 로그아웃하고 로그인 화면으로 가요" tone="pink" />
@@ -161,9 +160,8 @@ export function MyDesk() {
           key={editKey}
           open
           onClose={() => setEditKey(null)}
-          eyebrow="PROFILE EDIT"
           title="나를 소개하는 메모"
-          description="동료들이 나를 잘 알아볼 수 있도록 핵심 정보만 또렷하게 적어주세요."
+          description="나를 표현하는 핵심 정보를 간단하게 적어주세요."
         >
           <ProfileForm
             mode="edit"

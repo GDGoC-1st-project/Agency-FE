@@ -2,14 +2,11 @@
 
 import { useEffect, useId, useRef, type ReactNode } from "react";
 import { IconButton } from "@/components/ui/Button";
-import { Eyebrow } from "@/components/ui/PageIntro";
 import { cn } from "@/lib/cn";
 
 interface DialogProps {
   open: boolean;
   onClose: () => void;
-  /** 영문 소제목. 예: REQUEST RESPONSE */
-  eyebrow?: string;
   title: ReactNode;
   description?: ReactNode;
   /** 제목 위 그림 영역 (멤버 프로필 배너, 같이해요 제안의 분홍 원 등) */
@@ -31,7 +28,7 @@ interface DialogProps {
  * `useResetOnHide(() => setOpen(false))`를 쓰세요. (여기서 onClose를 부르면 개발 모드의 StrictMode가
  * 처음 그릴 때도 정리 함수를 한 번 실행해서 열자마자 닫혀 버립니다.)
  */
-export function Dialog({ open, onClose, eyebrow, title, description, visual, headerActions, children, footer }: DialogProps) {
+export function Dialog({ open, onClose, title, description, visual, headerActions, children, footer }: DialogProps) {
   const titleId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
   const onCloseRef = useRef(onClose);
@@ -78,8 +75,7 @@ export function Dialog({ open, onClose, eyebrow, title, description, visual, hea
           <IconButton ref={closeRef} icon="close" label="닫기" variant="round" onClick={onClose} />
         </div>
         {visual && <div className="pb-6">{visual}</div>}
-        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-        <h2 id={titleId} className="pt-2 pr-10 font-display text-display-md text-ink">
+        <h2 id={titleId} className="pr-10 font-display text-display-md text-ink">
           {title}
         </h2>
         {description && <p className="pt-1 text-11 text-subtle">{description}</p>}

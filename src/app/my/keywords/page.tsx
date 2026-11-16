@@ -22,15 +22,13 @@ export default function MyKeywordsPage() {
           <Tape tone="blue" className="hidden lg:block" />
           <PageIntro
             variant="flow"
-            eyebrow="KEYWORD DESK"
             title="나를 설명하는 단어들"
             description="입력 후 Enter를 누르면 키워드가 추가되고, ×를 누르면 삭제돼요."
             className="lg:hidden"
           />
           <header className="hidden lg:block">
-            <p className="text-10 font-bold tracking-eyebrow text-eyebrow">KEYWORD REGISTRATION</p>
-            <h1 className="pt-2 font-display text-display-pc text-ink">나를 설명하는 키워드를 붙여주세요</h1>
-            <p className="pt-2.5 text-13 text-muted">잘하는 일과 배우고 싶은 것, 관심사를 나누어 적으면 더 잘 맞는 동료를 만날 수 있어요.</p>
+            <h1 className="font-display text-display-pc text-ink">나를 설명하는 키워드를 붙여주세요</h1>
+            <p className="pt-2.5 text-13 text-muted">잘하는 일과 배우고 싶은 것, 관심사를 나누어 적으면 더 잘 맞는 멤버를 만날 수 있어요.</p>
           </header>
           <KeywordsForm mode="edit" />
         </div>

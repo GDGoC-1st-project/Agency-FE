@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/Button";
 import { FormCard } from "@/components/ui/Card";
 import { FilterChip } from "@/components/ui/Chip";
 import { Field, FormError, Input, Textarea, TextField } from "@/components/ui/Input";
-import { Eyebrow } from "@/components/ui/PageIntro";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { ApiError, createProfile, getErrorMessage, getMe, updateProfile } from "@/lib/api";
@@ -171,9 +170,8 @@ export function ProfileForm({ mode = "onboarding", frame = "card", onSaved }: Pr
     <>
       {!isEdit && (
         <div className="hidden pb-6 lg:block">
-          <Eyebrow>PROFILE SETUP</Eyebrow>
-          <h1 className="pt-2 font-display text-display-md text-ink">나를 소개하는 메모</h1>
-          <p className="pt-1 text-11 text-subtle">동료들이 나를 잘 알아볼 수 있도록 핵심 정보만 또렷하게 적어주세요.</p>
+          <h1 className="font-display text-display-md text-ink">나를 소개하는 메모</h1>
+          <p className="pt-1 text-11 text-subtle">나를 표현하는 핵심 정보를 간단하게 적어주세요.</p>
           <ProgressBar value={33} label="가입 설정 1/3" className="mt-5" />
         </div>
       )}

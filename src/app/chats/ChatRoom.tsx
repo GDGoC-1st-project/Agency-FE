@@ -170,7 +170,7 @@ export function ChatRoom() {
     } catch (err) {
       setSendError(
         err instanceof ApiError && err.code === "CHAT403"
-          ? "이 동료와는 지금 대화할 수 없어요."
+          ? "이 멤버와는 지금 대화할 수 없어요."
           : getErrorMessage(err, "메시지를 보내지 못했어요. 잠시 후 다시 시도해 주세요."),
       );
     } finally {

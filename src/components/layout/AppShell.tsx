@@ -16,7 +16,7 @@ export interface ShellOptions {
    * PC 모양은 그대로입니다.
    */
   mobileBare?: boolean;
-  /** PC 상단바 제목. 없으면 현재 메뉴 이름 (예: 마이 하위의 "연결 동료") */
+  /** PC 상단바 제목. 없으면 현재 메뉴 이름 (예: 마이 하위의 "연결 멤버") */
   pcTitle?: string;
 }
 

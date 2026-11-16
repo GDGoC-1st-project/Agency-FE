@@ -24,7 +24,7 @@ export function PcTopBar({ preview = false, title: titleOverride }: { preview?: 
     >
       <div>
         <p className="text-16 font-bold text-ink">{title}</p>
-        <p className="pt-0.75 text-10 text-muted">좋은 동료를 발견하는 가장 다정한 방법</p>
+        <p className="pt-0.75 text-10 text-muted">좋은 멤버를 발견하는 가장 다정한 방법</p>
       </div>
       <Link href={ROUTES.my} aria-label="마이">
         <Avatar size="md" />

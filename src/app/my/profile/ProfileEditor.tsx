@@ -12,9 +12,8 @@ export function ProfileEditor() {
     <div className="flex flex-col gap-7.5">
       <PageIntro
         variant="flow"
-        eyebrow="PROFILE NOTE"
         title="나를 소개하는 메모"
-        description="동료들이 나를 잘 알아볼 수 있도록 핵심 정보만 또렷하게 적어주세요."
+        description="나를 표현하는 핵심 정보를 간단하게 적어주세요."
       />
       <ProfileForm mode="edit" onSaved={() => router.push(ROUTES.my)} />
     </div>

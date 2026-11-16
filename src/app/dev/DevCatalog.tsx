@@ -48,6 +48,8 @@ const COLORS = [
 
 const TEXT_SIZES = ["text-9", "text-10", "text-11", "text-12", "text-13", "text-14", "text-15", "text-16"] as const;
 const DISPLAY_SIZES = [
+  "text-display-hero",
+  "text-display-2xl",
   "text-display-xl",
   "text-display-lg",
   "text-display-md",
@@ -83,7 +85,6 @@ export function DevCatalog() {
       <AppShell requestCount={3} userName="강민지">
       <div className="flex flex-col gap-8">
         <PageIntro
-          eyebrow="DESIGN SYSTEM"
           title="컴포넌트 모음"
           description="docs/screens.md 기준 모바일·PC 공통 레이아웃과 components/ui 입니다. 1024px 이상에서 PC 레이아웃으로 바뀝니다. 개발 모드에서만 열립니다."
         />
@@ -102,15 +103,15 @@ export function DevCatalog() {
         <Section title="글자 (font-sans · font-display)">
           {TEXT_SIZES.map((size) => (
             <p key={size} className={size}>
-              <span className="font-bold">{size}</span> 함께할 동료를 찾아요
+              <span className="font-bold">{size}</span> 함께할 멤버를 찾아요
             </p>
           ))}
           {DISPLAY_SIZES.map((size) => (
             <p key={size} className={`font-display ${size}`}>
-              {size.replace("text-", "")} 함께할 동료
+              {size.replace("text-", "")} 함께할 멤버
             </p>
           ))}
-          <p className="text-10 font-bold tracking-eyebrow text-eyebrow">EYEBROW · tracking-eyebrow</p>
+          <p className="text-10 font-bold tracking-eyebrow text-eyebrow">채팅 연결 안내 · tracking-eyebrow</p>
         </Section>
 
         <Section title="아이콘 (Icon)">
@@ -163,7 +164,7 @@ export function DevCatalog() {
             <Textarea id="dev-bio" size="auth" placeholder="어떤 사람인지 한 문장으로 소개해 주세요" />
           </Field>
           <Field label="제목 (dialog 크기)" htmlFor="dev-title">
-            <Input id="dev-title" size="dialog" placeholder="어떤 팀원을 찾고 있나요?" />
+            <Input id="dev-title" size="dialog" placeholder="어떤 멤버를 찾고 있나요?" />
           </Field>
           <Field label="거절 사유" htmlFor="dev-reason">
             <Textarea id="dev-reason" placeholder="예: 현재 참여 중인 프로젝트가 있어 이번에는 함께하기 어려워요." />
@@ -263,7 +264,7 @@ export function DevCatalog() {
             </div>
           </BoxCard>
           <LinkCard href={ROUTES.my} icon="key" title="내 키워드" description="잘하는 일과 관심사를 수정해요" />
-          <LinkCard href={ROUTES.my} icon="members" title="내 연결" description="연결된 동료를 한눈에 확인해요" tone="blue" />
+          <LinkCard href={ROUTES.my} icon="members" title="내 연결" description="연결된 멤버를 한눈에 확인해요" tone="blue" />
           <LinkCard href={ROUTES.my} icon="shield" title="운영 관리" description="가입 승인과 신고를 처리해요" tone="green" />
           <LinkCard href={ROUTES.my} count={2} title="가입 승인 대기 2명" description="새 멤버의 프로필을 검토해요 (count: Card/Admin Action)" tone="yellow" />
           <LinkCard onClick={() => alert("onClick: 버튼으로 그려짐")} icon="back" title="로그아웃" description="href 대신 onClick (마이의 로그아웃)" tone="pink" />
@@ -278,10 +279,9 @@ export function DevCatalog() {
         </Section>
 
         <Section title="페이지 소개 (PageIntro)">
-          <PageIntro variant="flow" eyebrow="START TOGETHER" title="함께할 준비를 시작해요" description="기본 정보를 남기고 나와 잘 맞는 동료를 만나보세요." />
+          <PageIntro variant="flow" title="함께할 준비를 시작해요" description="기본 정보를 남기고 나와 잘 맞는 멤버를 만나보세요." />
           <PageIntro
-            eyebrow="RECRUIT BOARD"
-            title="지금 함께할 팀을 찾아요"
+            title="함께할 멤버를 찾아요"
             description="action: 오른쪽 버튼 (모바일은 아이콘만, PC는 글자까지)"
             action={
               <Button icon="plus" aria-label="모집 글 쓰기" className="max-lg:w-11.5 max-lg:px-3">
@@ -326,7 +326,6 @@ export function DevCatalog() {
       <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        eyebrow="REQUEST RESPONSE"
         title="이번 연결은 정중히 거절할게요"
         description="김유진 님에게 전달할 이유를 짧게 남겨주세요."
         footer={

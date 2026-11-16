@@ -96,8 +96,7 @@ export function MembersBoard() {
   return (
     <div className="flex flex-col">
       <PageIntro
-        eyebrow="MEMBER BOARD"
-        title="어떤 동료를 찾고 있나요?"
+        title="어떤 멤버를 찾고 있나요?"
         description="관심사와 역할이 잘 맞는 멤버를 둘러보고 가볍게 연결을 시작해 보세요."
       />
 

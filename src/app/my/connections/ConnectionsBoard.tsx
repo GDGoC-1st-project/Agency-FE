@@ -62,8 +62,7 @@ export function ConnectionsBoard() {
     <div className="flex flex-col">
       <PageIntro
         variant="flow"
-        eyebrow="MY CONNECTIONS"
-        title="나와 연결된 동료"
+        title="나와 연결된 멤버"
         description="프로필을 다시 확인하거나 바로 대화를 이어가세요."
       />
 
@@ -79,7 +78,7 @@ export function ConnectionsBoard() {
         {status === "ready" && items.length === 0 && (
           <StateMessage
             type="empty"
-            title="아직 연결된 동료가 없어요"
+            title="아직 연결된 멤버가 없어요"
             description="같이 해요 제안이나 모집 지원이 수락되면 여기에 모여요."
           />
         )}

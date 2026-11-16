@@ -55,7 +55,7 @@ export function SignupApprovals() {
 
   return (
     <div className="flex flex-col">
-      <AdminListIntro eyebrow="WAITING LIST" count={list.status === "ready" ? list.total : null} description="승인을 기다리는 가입 신청이에요." />
+      <AdminListIntro count={list.status === "ready" ? list.total : null} description="승인을 기다리는 가입 신청이에요." />
       <AdminListBody list={list} notice={notice} emptyTitle="기다리는 가입 신청이 없어요" emptyDescription="새 신청이 오면 여기에 보여요.">
         <ul className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           {list.items.map((s, i) => (

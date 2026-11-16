@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Avatar } from "@/components/ui/Avatar";
 import { CountBadge } from "@/components/ui/Badge";
-import { Tape } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/cn";
@@ -21,7 +20,7 @@ export interface SidebarProps {
 }
 
 /**
- * Figma Navigation/Sidebar (PC, 1:979): 로고 · 주 메뉴 · 오늘의 메모 · 프로필 바로가기. 폭 248.
+ * Figma Navigation/Sidebar (PC, 1:979): 로고 · 주 메뉴 · 프로필 바로가기. 폭 248.
  * 1024px 미만에서는 숨고 모바일 하단 내비를 씁니다.
  * 프로필 바로가기의 "프로필 80%" 진행률은 docs/screens.md 4-1의 9번 결정으로 넣지 않습니다.
  */
@@ -69,8 +68,7 @@ export function Sidebar({ requestCount = 0, userName = null, preview = false }: 
         </ul>
       </nav>
 
-      <div className="mt-auto flex flex-col gap-6">
-        <DailyNote />
+      <div className="mt-auto flex flex-col">
         <Link
           href={ROUTES.my}
           className="flex items-center gap-2.5 rounded-[10px] border border-line bg-white p-2.5 transition-colors hover:border-ink"
@@ -82,18 +80,5 @@ export function Sidebar({ requestCount = 0, userName = null, preview = false }: 
         </Link>
       </div>
     </aside>
-  );
-}
-
-/** Figma Note/Daily: 사이드바 아래 "오늘의 메모" (살짝 기울어진 하늘색 메모 + 테이프) */
-function DailyNote() {
-  return (
-    <div className="px-2">
-      <div className="relative -rotate-[1.2deg] bg-blue-faint px-4.5 pt-6.5 pb-5 shadow-paper">
-        <Tape tone="blue" />
-        <p className="text-10 font-bold tracking-eyebrow text-eyebrow">오늘의 메모</p>
-        <p className="pt-2 text-15 leading-[23.3px] font-bold text-ink">혼자보다 함께할 때 더 멀리 갈 수 있어요.</p>
-      </div>
-    </div>
   );
 }

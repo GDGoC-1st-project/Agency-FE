@@ -138,7 +138,6 @@ export function RequestsBoard() {
   return (
     <div className="flex flex-col">
       <PageIntro
-        eyebrow="CONNECTION REQUESTS"
         title="도착한 연결 요청을 확인해요"
         description="한 번의 수락이 멋진 팀의 시작이 될 수 있어요."
       />

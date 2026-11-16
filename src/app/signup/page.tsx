@@ -16,9 +16,8 @@ export default function SignupPage() {
     <AuthLayout title="회원가입">
       <PageIntro
         variant="flow"
-        eyebrow="START TOGETHER"
         title="함께할 준비를 시작해요"
-        description="기본 정보를 남기고 나와 잘 맞는 동료를 만나보세요."
+        description="기본 정보를 남기고 나와 잘 맞는 멤버를 만나보세요."
       />
       <SignupForm />
       <p className="text-center">
