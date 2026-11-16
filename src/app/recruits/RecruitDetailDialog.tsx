@@ -193,9 +193,9 @@ export function RecruitDetailDialog({ postId, onClose, onChanged }: Props) {
             </p>
           )}
           <NoteCard tone="yellow" tape="pink" className="mt-2 px-7 pt-8.75 pb-7">
-            <h3 className="text-12 text-ink">어떤 프로젝트인가요?</h3>
+            <h3 className="text-12 font-bold text-ink">어떤 프로젝트인가요?</h3>
             <p className="pt-2.5 text-12 leading-[21.6px] whitespace-pre-line text-ink">{post.description}</p>
-            <h3 className="pt-6 text-12 text-ink">이런 멤버를 기다려요</h3>
+            <h3 className="pt-6 text-12 font-bold text-ink">이런 멤버를 기다려요</h3>
             <ul aria-label="모집 역할" className="flex flex-wrap gap-1.25 pt-2.5">
               {post.requiredRoles.map((r) => (
                 <li key={r} className="inline-flex h-8.25 items-center rounded-tag border border-ink bg-ink px-2.5 text-11 text-white">
@@ -205,7 +205,7 @@ export function RecruitDetailDialog({ postId, onClose, onChanged }: Props) {
             </ul>
             {post.keywords.length > 0 && (
               <>
-                <h3 className="pt-5 text-12 text-ink">관련 키워드</h3>
+                <h3 className="pt-5 text-12 font-bold text-ink">관련 키워드</h3>
                 <div className="flex flex-wrap gap-1.25 pt-2.5">
                   {post.keywords.map((k) => (
                     <KeywordTag key={k} name={k} size="md" />
