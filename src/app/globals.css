@@ -71,7 +71,7 @@
   --text-display-xl: 32px; /* 모바일 페이지 제목 (멤버·모집·요청 등) */
   --text-display-xl--line-height: 36px;
   --text-display-xl--letter-spacing: -1.4px;
-  --text-display-lg: 39px; /* 흐름 화면 제목 (회원가입·로그인 등) */
+  --text-display-lg: 39px; /* PC 흐름 화면 제목 (회원가입·로그인 등) */
   --text-display-lg--line-height: 44.5px;
   --text-display-lg--letter-spacing: -1.6px;
   --text-display-md: 29px; /* 다이얼로그 제목 */

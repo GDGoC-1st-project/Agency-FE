@@ -6,7 +6,7 @@ interface PageIntroProps {
   description?: ReactNode;
   /**
    * main: 하단 내비가 있는 메인 화면 (Figma Page Intro, 제목 모바일 32px · PC 48px)
-   * flow: 회원가입·로그인·마이 하위 화면 (Figma Intro/Flow, 제목 39px)
+   * flow: 회원가입·로그인·마이 하위 화면 (제목 모바일 32px · PC 39px, 메인 제목보다 크지 않게)
    */
   variant?: "main" | "flow";
   /** 오른쪽 버튼 (예: 모집 글 쓰기). 모바일은 위쪽, PC는 세로 가운데에 맞춥니다 (Figma Page Intro) */
@@ -18,7 +18,7 @@ interface PageIntroProps {
 export function PageIntro({ title, description, variant = "main", action, className }: PageIntroProps) {
   const text = (
     <>
-      <h1 className={cn("font-display text-ink", variant === "main" ? "text-display-xl lg:text-display-2xl" : "text-display-lg")}>
+      <h1 className={cn("font-display text-ink", variant === "main" ? "text-display-xl lg:text-display-2xl" : "text-display-xl lg:text-display-lg")}>
         {title}
       </h1>
       {description && (

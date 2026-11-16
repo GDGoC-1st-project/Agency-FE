@@ -139,7 +139,12 @@ export function RequestsBoard() {
     <div className="flex flex-col">
       <PageIntro
         title={tab === "received" ? "도착한 요청을 확인해요" : "보낸 요청을 확인해요"}
-        description={tab === "received" ? "한 번의 수락이 멋진 팀의 시작이 될 수 있어요." : undefined}
+        description={
+          // 보낸 요청 탭에서도 같은 높이를 차지하게 두어 탭을 오갈 때 아래 탭 위치가 움직이지 않게 합니다.
+          <span className={tab === "received" ? undefined : "invisible"} aria-hidden={tab === "received" ? undefined : true}>
+            한 번의 수락이 멋진 팀의 시작이 될 수 있어요.
+          </span>
+        }
       />
 
       <div className="pt-7.5">
