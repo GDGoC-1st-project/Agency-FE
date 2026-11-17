@@ -21,7 +21,7 @@ export function NotFound({
     <main className="flex min-h-dvh flex-col items-center justify-center gap-6 px-4 py-16 text-center">
       <Logo variant="mobile" />
       <div className="flex flex-col items-center gap-2">
-        <p className="font-display text-display-2xl text-ink" aria-hidden>
+        <p className="font-display text-display-hero text-ink" aria-hidden>
           404
         </p>
         <h1 className="font-display text-display-md text-ink">{title}</h1>

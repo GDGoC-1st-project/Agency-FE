@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
-import { Eyebrow } from "@/components/ui/PageIntro";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { getErrorMessage } from "@/lib/api";
 import { ROUTES } from "@/lib/routes";
@@ -67,14 +66,11 @@ export function useAdminList<T>(fetchPage: (params: PageParams) => Promise<Count
   return { items, total, hasNext, status, error, loadingMore, reload: () => load(0), loadMore: () => load(page + 1), remove };
 }
 
-/** Figma 가입 승인·신고 관리 머리: 영문 소제목 + 오른쪽 큰 "2건" + 설명 */
-export function AdminListIntro({ eyebrow, count, description }: { eyebrow: string; count: number | null; description: string }) {
+/** Figma 가입 승인·신고 관리 머리: 큰 "2건" + 설명 */
+export function AdminListIntro({ count, description }: { count: number | null; description: string }) {
   return (
     <header className="flex flex-col lg:max-w-88.75">
-      <div className="flex items-end justify-between gap-3">
-        <Eyebrow className="pb-2">{eyebrow}</Eyebrow>
-        {count !== null && <p className="font-display text-display-md text-ink">{count}건</p>}
-      </div>
+      {count !== null && <p className="font-display text-display-md text-ink">{count}건</p>}
       <p className="pt-2 text-10 text-muted">{description}</p>
     </header>
   );

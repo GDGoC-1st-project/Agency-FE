@@ -96,8 +96,7 @@ export function MembersBoard() {
   return (
     <div className="flex flex-col">
       <PageIntro
-        eyebrow="MEMBER BOARD"
-        title="어떤 동료를 찾고 있나요?"
+        title="어떤 멤버를 찾고 있나요?"
         description="관심사와 역할이 잘 맞는 멤버를 둘러보고 가볍게 연결을 시작해 보세요."
       />
 
@@ -110,7 +109,7 @@ export function MembersBoard() {
         />
       </form>
 
-      <div className="flex flex-col gap-7.5 pt-12 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-3.75 pt-12 lg:flex-row lg:items-end lg:justify-between lg:gap-7.5">
         <h2 className="font-display text-[25px] leading-[37.5px] tracking-[-0.7px] text-ink">함께할 멤버</h2>
         <div role="group" aria-label="분야" className="flex gap-1">
           {filters.map((f) => (

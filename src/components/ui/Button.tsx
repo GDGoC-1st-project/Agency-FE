@@ -53,7 +53,7 @@ export function Button({
   );
 }
 
-/** Button과 같은 모양의 링크 (다른 화면으로 이동할 때. 예: 연결 동료의 "채팅하기") */
+/** Button과 같은 모양의 링크 (다른 화면으로 이동할 때. 예: 연결 멤버의 "채팅하기") */
 export function ButtonLink({
   variant = "primary",
   fullWidth = false,

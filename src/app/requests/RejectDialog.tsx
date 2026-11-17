@@ -67,7 +67,6 @@ export function RejectDialog({ request, onClose, onRejected }: Props) {
     <Dialog
       open
       onClose={onClose}
-      eyebrow="REQUEST RESPONSE"
       title="이번 연결은 정중히 거절할게요"
       description={`${request.sender.name} 님에게 전달할 이유를 짧게 남겨주세요.`}
       footer={

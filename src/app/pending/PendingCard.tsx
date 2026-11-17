@@ -45,12 +45,11 @@ export function PendingCard() {
       aria-labelledby="pending-title"
       className="relative flex w-full flex-col items-center gap-6 border border-ink bg-paper px-5.5 pt-8 pb-7 text-center shadow-hard-lg lg:w-130 lg:gap-4 lg:px-12 lg:pt-12 lg:pb-10"
     >
-      {/* PC(Figma 1:614)에만 있는 테이프 · 시계 · 영문 소제목 */}
+      {/* PC(Figma 1:614)에만 있는 테이프 · 시계 */}
       <Tape tone="yellow" className="hidden lg:block" />
       <span className="hidden size-17.5 items-center justify-center rounded-full border-2 border-ink bg-pink shadow-hard lg:inline-flex">
         <Icon name="clock" size={28} className="text-ink" />
       </span>
-      <p className="hidden pt-2 text-10 font-bold tracking-eyebrow text-eyebrow lg:block">APPROVAL PENDING</p>
       <h1 id="pending-title" className="font-display text-[26px] leading-[33px] text-ink lg:text-display-pc">
         가입 승인 대기 중
       </h1>

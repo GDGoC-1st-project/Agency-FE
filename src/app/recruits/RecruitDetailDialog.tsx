@@ -31,7 +31,7 @@ function roleLabel(role: string) {
  * - 상단 소제목은 D-day 없이 "RECRUIT DETAIL" (docs/screens.md 4-3의 2번)
  * - hasApplied면 "지원했어요"(누를 수 없음), 아니면 "함께하고 싶어요" → 모집글 지원 API
  * - 내가 쓴 글(isAuthor)이면 지원 대신 "삭제하기"(한 번 더 확인) · "수정하기"(작성 다이얼로그를 기존 값으로)
- * - 디자인의 "이런 동료를 기다려요"에는 모집 역할(requiredRoles)을, 그 아래 "관련 키워드"에 키워드를 보여줍니다.
+ * - 디자인의 "이런 멤버를 기다려요"에는 모집 역할(requiredRoles)을, 그 아래 "관련 키워드"에 키워드를 보여줍니다.
  */
 export function RecruitDetailDialog({ postId, onClose, onChanged }: Props) {
   const [post, setPost] = useState<PostDetailResponse | null>(null);
@@ -130,7 +130,6 @@ export function RecruitDetailDialog({ postId, onClose, onChanged }: Props) {
       <Dialog
         open
         onClose={onClose}
-        eyebrow="DELETE RECRUIT NOTE"
         title="이 모집 글을 지울까요?"
         description="지운 글은 되돌릴 수 없고, 목록에서도 바로 사라져요."
         footer={
@@ -174,7 +173,6 @@ export function RecruitDetailDialog({ postId, onClose, onChanged }: Props) {
     <Dialog
       open
       onClose={onClose}
-      eyebrow="RECRUIT DETAIL"
       title={post?.title ?? "모집 글"}
       description={post ? (post.isAuthor ? "내가 붙인 모집 메모" : `${post.author.name} 님이 붙인 모집 메모`) : undefined}
       footer={footer}
@@ -195,9 +193,9 @@ export function RecruitDetailDialog({ postId, onClose, onChanged }: Props) {
             </p>
           )}
           <NoteCard tone="yellow" tape="pink" className="mt-2 px-7 pt-8.75 pb-7">
-            <h3 className="text-12 text-ink">어떤 프로젝트인가요?</h3>
+            <h3 className="text-12 font-bold text-ink">어떤 프로젝트인가요?</h3>
             <p className="pt-2.5 text-12 leading-[21.6px] whitespace-pre-line text-ink">{post.description}</p>
-            <h3 className="pt-6 text-12 text-ink">이런 동료를 기다려요</h3>
+            <h3 className="pt-6 text-12 font-bold text-ink">이런 멤버를 기다려요</h3>
             <ul aria-label="모집 역할" className="flex flex-wrap gap-1.25 pt-2.5">
               {post.requiredRoles.map((r) => (
                 <li key={r} className="inline-flex h-8.25 items-center rounded-tag border border-ink bg-ink px-2.5 text-11 text-white">
@@ -207,7 +205,7 @@ export function RecruitDetailDialog({ postId, onClose, onChanged }: Props) {
             </ul>
             {post.keywords.length > 0 && (
               <>
-                <h3 className="pt-5 text-12 text-ink">관련 키워드</h3>
+                <h3 className="pt-5 text-12 font-bold text-ink">관련 키워드</h3>
                 <div className="flex flex-wrap gap-1.25 pt-2.5">
                   {post.keywords.map((k) => (
                     <KeywordTag key={k} name={k} size="md" />

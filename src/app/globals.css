@@ -27,7 +27,6 @@
   --color-yellow-soft: #fff5ae;
   --color-blue: #a9d6e5;
   --color-blue-soft: #d4ecf3;
-  --color-blue-faint: #eef8fb; /* PC 사이드바 "오늘의 메모" */
   --color-pink: #ffb3c6;
   --color-pink-soft: #ffd2dd;
   --color-green: #b8e986;
@@ -60,16 +59,19 @@
   --text-16--line-height: 24px;
 
   /* ── 제목 크기 (Black Han Sans, font-display와 함께 사용) ── */
-  --text-display-2xl: 58px; /* PC 페이지 제목 (Figma Page Intro PC 58/65) */
-  --text-display-2xl--line-height: 65px;
-  --text-display-2xl--letter-spacing: -2.6px;
+  --text-display-hero: 58px; /* 404 큰 숫자 */
+  --text-display-hero--line-height: 65px;
+  --text-display-hero--letter-spacing: -2.6px;
+  --text-display-2xl: 48px; /* PC 페이지 제목 */
+  --text-display-2xl--line-height: 54px;
+  --text-display-2xl--letter-spacing: -2.1px;
   --text-display-pc: 36px; /* PC 가입 설정 카드 제목 */
   --text-display-pc--line-height: 42.5px;
   --text-display-pc--letter-spacing: -1.4px;
-  --text-display-xl: 46.8px; /* 페이지 제목 (멤버·모집·요청 등) */
-  --text-display-xl--line-height: 52.4px;
-  --text-display-xl--letter-spacing: -2.1px;
-  --text-display-lg: 39px; /* 흐름 화면 제목 (회원가입·로그인 등) */
+  --text-display-xl: 32px; /* 모바일 페이지 제목 (멤버·모집·요청 등) */
+  --text-display-xl--line-height: 36px;
+  --text-display-xl--letter-spacing: -1.4px;
+  --text-display-lg: 39px; /* PC 흐름 화면 제목 (회원가입·로그인 등) */
   --text-display-lg--line-height: 44.5px;
   --text-display-lg--letter-spacing: -1.6px;
   --text-display-md: 29px; /* 다이얼로그 제목 */

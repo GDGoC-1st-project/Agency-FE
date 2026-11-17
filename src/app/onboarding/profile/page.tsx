@@ -18,9 +18,8 @@ export default function OnboardingProfilePage() {
       <main className="flex flex-col gap-7.5 px-4 pt-8.5 pb-13 lg:min-h-[calc(100dvh-74px)] lg:items-center lg:justify-center lg:px-9 lg:py-16">
         <PageIntro
           variant="flow"
-          eyebrow="PROFILE NOTE"
           title="나를 소개하는 메모"
-          description="동료들이 나를 잘 알아볼 수 있도록 핵심 정보만 또렷하게 적어주세요."
+          description="나를 표현하는 핵심 정보를 간단하게 적어주세요."
           className="lg:hidden"
         />
         <ProfileForm />

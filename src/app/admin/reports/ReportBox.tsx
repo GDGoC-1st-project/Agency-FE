@@ -37,7 +37,7 @@ export function ReportBox() {
 
   return (
     <div className="flex flex-col">
-      <AdminListIntro eyebrow="REPORT BOX" count={list.status === "ready" ? list.total : null} description="처리를 기다리는 신고 내역이에요." />
+      <AdminListIntro count={list.status === "ready" ? list.total : null} description="처리를 기다리는 신고 내역이에요." />
       <AdminListBody list={list} notice={notice} emptyTitle="처리할 신고가 없어요" emptyDescription="새 신고가 접수되면 여기에 보여요.">
         <ul className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           {list.items.map((r) => (
@@ -114,7 +114,6 @@ function ResolveDialog({
     <Dialog
       open
       onClose={onClose}
-      eyebrow="REPORT REVIEW"
       title="신고 처리"
       description="신고 내용을 확인하고 처리를 완료해 주세요."
       footer={

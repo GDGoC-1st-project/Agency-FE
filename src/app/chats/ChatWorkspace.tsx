@@ -90,7 +90,7 @@ export function ChatWorkspace({ children }: { children: ReactNode }) {
     <MainLayout mobileBare={inRoom}>
       <ChatRoomsContext.Provider value={value}>
         <div className="flex flex-col">
-          <PageIntro eyebrow="TEAM TALK" title="연결된 동료와 이야기해요" className={cn(inRoom && "max-lg:hidden")} />
+          <PageIntro title="연결된 멤버와 이야기해요" className={cn(inRoom && "max-lg:hidden")} />
           <div className={cn("lg:pt-7.5", !inRoom && "pt-7.5")}>
             <div
               className={cn(

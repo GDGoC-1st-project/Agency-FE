@@ -36,7 +36,7 @@ export function AdminDashboard() {
 
   return (
     <div className="flex flex-col">
-      <PageIntro variant="flow" eyebrow="OPERATION DESK" title="커뮤니티 운영 메모" description="가입 대기와 신고 내역을 빠르게 확인해요." />
+      <PageIntro variant="flow" title="커뮤니티 운영 메모" description="가입 대기와 신고 내역을 빠르게 확인해요." />
       <div className="pt-7.5">
         {error && <StateMessage type="error" title="운영 현황을 불러오지 못했어요" description={error} actionLabel="다시 시도" onAction={() => void load()} />}
         {!error && !data && (

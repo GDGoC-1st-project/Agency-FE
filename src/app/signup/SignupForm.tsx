@@ -82,7 +82,7 @@ export function SignupForm() {
   }
 
   return (
-    <FormCard>
+    <FormCard className="pb-10">
       <form noValidate onSubmit={handleSubmit} aria-busy={submitting} className="flex flex-col">
         <fieldset disabled={submitting} className="flex flex-col gap-4">
           <TextField label="아이디" autoComplete="username" placeholder="영문·숫자 4~20자" {...bind("loginId")} />
@@ -103,7 +103,7 @@ export function SignupForm() {
           <TextField label="초대 코드" autoComplete="off" placeholder="초대 코드를 입력해 주세요" {...bind("inviteCode")} />
         </fieldset>
         <FormError message={formError} className="mt-4" />
-        <Button type="submit" fullWidth disabled={submitting} className="mt-6">
+        <Button type="submit" fullWidth disabled={submitting} className="mt-8">
           {submitting ? "가입하는 중…" : "가입하기"}
         </Button>
       </form>

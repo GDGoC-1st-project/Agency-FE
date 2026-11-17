@@ -4,7 +4,7 @@ import "./globals.css";
 
 const notoSansKr = Noto_Sans_KR({
   variable: "--font-noto-sans-kr",
-  weight: ["400", "700", "900"],
+  weight: ["400", "600", "700", "900"],
   subsets: ["latin"],
 });
 
@@ -16,7 +16,7 @@ const blackHanSans = Black_Han_Sans({
 
 export const metadata: Metadata = {
   title: "인력사무소 · GDGoC TEAM MATCH",
-  description: "GDGoC 멤버들이 함께할 동료를 찾는 곳",
+  description: "GDGoC에서 함께할 멤버를 찾는 곳",
 };
 
 /**

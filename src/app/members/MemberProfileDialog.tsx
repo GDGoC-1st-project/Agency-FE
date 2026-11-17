@@ -126,7 +126,6 @@ export function MemberProfileDialog({ memberId, onClose, onBlocked }: Props) {
       <Dialog
         open
         onClose={onClose}
-        eyebrow="REPORT"
         title={`${name} 님을 신고할까요?`}
         description="운영진이 내용을 확인한 뒤 조치해요. 신고한 사실은 상대에게 알리지 않아요."
         footer={
@@ -167,7 +166,6 @@ export function MemberProfileDialog({ memberId, onClose, onBlocked }: Props) {
       <Dialog
         open
         onClose={onClose}
-        eyebrow="BLOCK"
         title={`${name} 님을 차단할까요?`}
         description="차단하면 멤버 목록과 모집 글에서 이 멤버가 보이지 않고, 채팅 메시지도 보낼 수 없어요."
         footer={
@@ -195,7 +193,6 @@ export function MemberProfileDialog({ memberId, onClose, onBlocked }: Props) {
     <Dialog
       open
       onClose={onClose}
-      eyebrow="MEMBER PROFILE"
       title={name}
       description={profile ? `${DEPARTMENT_LABEL[profile.department]} · ${profile.major}` : undefined}
       headerActions={

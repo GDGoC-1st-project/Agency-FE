@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Avatar, toneFor } from "@/components/ui/Avatar";
+import { Avatar } from "@/components/ui/Avatar";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { NoteCard, noteToneAt, type NoteTone } from "@/components/ui/Card";
 import { KeywordTag } from "@/components/ui/Chip";
@@ -62,8 +62,7 @@ export function ConnectionsBoard() {
     <div className="flex flex-col">
       <PageIntro
         variant="flow"
-        eyebrow="MY CONNECTIONS"
-        title="나와 연결된 동료"
+        title="나와 연결된 멤버"
         description="프로필을 다시 확인하거나 바로 대화를 이어가세요."
       />
 
@@ -79,7 +78,7 @@ export function ConnectionsBoard() {
         {status === "ready" && items.length === 0 && (
           <StateMessage
             type="empty"
-            title="아직 연결된 동료가 없어요"
+            title="아직 연결된 멤버가 없어요"
             description="같이 해요 제안이나 모집 지원이 수락되면 여기에 모여요."
           />
         )}
@@ -92,23 +91,25 @@ export function ConnectionsBoard() {
                   <li key={c.connectionId}>
                     <NoteCard tone={tone} tape={TAPE_FOR[tone]} className="flex h-full min-h-55 flex-col px-5.5 pt-7 pb-5.5">
                       <div className="flex items-center gap-3 pb-px">
-                        <Avatar tone={toneFor(c.member.memberId)} />
+                        <Avatar tone={tone} />
                         <p className="min-w-0 flex-1 truncate font-display text-display-2xs text-ink">{c.member.name}</p>
                         <span className="shrink-0 rounded-full border border-ink px-2.25 py-0.75 text-9 font-bold text-ink">
                           {DEPARTMENT_LABEL[c.member.department]}
                         </span>
                       </div>
-                      <ButtonLink href={ROUTES.chatRoom(c.chatRoomId)} aria-label={`${c.member.name} 님과 채팅하기`} fullWidth>
-                        채팅하기
-                      </ButtonLink>
-                      {c.member.major && <p className="pt-4 text-11 text-note">{c.member.major}</p>}
+                      {c.member.major && <p className="pt-3 text-11 text-note">{c.member.major}</p>}
                       {c.keywords.length > 0 && (
-                        <div className="flex flex-wrap gap-1.25 pt-2.5">
+                        <div className="flex flex-wrap gap-1.25 pt-3">
                           {c.keywords.map((k) => (
                             <KeywordTag key={k} name={k} />
                           ))}
                         </div>
                       )}
+                      <div className="mt-auto pt-5">
+                        <ButtonLink href={ROUTES.chatRoom(c.chatRoomId)} aria-label={`${c.member.name} 님과 채팅하기`} fullWidth>
+                          채팅하기
+                        </ButtonLink>
+                      </div>
                     </NoteCard>
                   </li>
                 );

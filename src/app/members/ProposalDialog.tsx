@@ -71,7 +71,6 @@ export function ProposalDialog({ open, member, onClose, onBack }: Props) {
         open={open}
         onClose={onClose}
         visual={visual}
-        eyebrow="CONNECTION"
         title="연결 요청을 보냈어요"
         description={`${member.name} 님이 수락하면 채팅이 열려요. 보낸 요청은 요청 › 보낸 요청에서 볼 수 있어요.`}
         footer={<Button onClick={onClose}>닫기</Button>}
@@ -84,7 +83,6 @@ export function ProposalDialog({ open, member, onClose, onBack }: Props) {
       open={open}
       onClose={onClose}
       visual={visual}
-      eyebrow="CONNECTION"
       title="연결 메시지를 남겨보세요"
       description="함께하고 싶은 이유를 짧게 전하면 수락 가능성이 높아져요."
       footer={

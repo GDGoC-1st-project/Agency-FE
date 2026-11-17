@@ -69,9 +69,8 @@ export function RecruitBoard() {
   return (
     <div className="flex flex-col">
       <PageIntro
-        eyebrow="RECRUIT BOARD"
-        title="지금 함께할 팀을 찾아요"
-        description="마음 가는 공고를 열어보고, 내 자리를 찾아보세요."
+        title="함께할 멤버를 찾아요"
+        description="마음이 가는 모집 메모를 열어보세요."
         action={
           <Button icon="plus" onClick={openCompose} aria-label="모집 글 쓰기" className="max-lg:w-11.5 max-lg:px-3">
             <span className="hidden lg:inline">모집 글 쓰기</span>
@@ -92,7 +91,7 @@ export function RecruitBoard() {
           <StateMessage
             type="empty"
             title="아직 모집 글이 없어요"
-            description="첫 모집 메모를 붙여 함께할 팀원을 찾아보세요."
+            description="첫 모집 메모를 붙여 함께할 멤버를 찾아보세요."
             actionLabel="모집 글 쓰기"
             onAction={openCompose}
           />
