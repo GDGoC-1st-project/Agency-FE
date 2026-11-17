@@ -6,19 +6,21 @@ import { Avatar, toneFor } from "@/components/ui/Avatar";
 import { IconButton, TextButton } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { StateMessage } from "@/components/ui/StateMessage";
-import { ApiError, getChatRoom, getErrorMessage, getMessages, markAsRead, sendMessage } from "@/lib/api";
+import { ApiError, connectChatSocket, getChatRoom, getErrorMessage, getMessages, markAsRead, sendMessage } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { formatClock, formatDateDivider, isSameDay } from "@/lib/datetime";
 import { ROUTES } from "@/lib/routes";
 import { useResetOnHide } from "@/lib/useResetOnHide";
 import type { ChatRoomDetailResponse } from "@/types/api";
-import { appendOlder, prependMessage, type ChatMessage } from "./chatMessages";
+import { appendOlder, applyReadReceipt, mergeLatest, prependMessage, type ChatMessage } from "./chatMessages";
 import { useChatRooms } from "./ChatRoomsContext";
 
 const PAGE_SIZE = 30;
 const CONTENT_MAX = 1000;
 /** 맨 위에서 이만큼 남았을 때 이전 메시지를 미리 불러옵니다 */
 const LOAD_OLDER_THRESHOLD = 80;
+/** 맨 아래에서 이만큼 안쪽이면 "맨 아래를 보는 중"으로 보고, 새 메시지가 오면 따라 내립니다 */
+const NEAR_BOTTOM = 120;
 
 type Status = "loading" | "ready" | "error";
 
@@ -96,22 +98,54 @@ export function ChatRoom() {
     void load();
   }, [load]);
 
-  // ── 실시간 수신 자리 (WebSocket) ─────────────────────────────────────────────
-  // 팀원이 맡을 예정입니다 (docs/screens.md 8절 "남은 작업" 1번). 붙일 때는 아래처럼 연결하면 됩니다.
-  //
-  // useEffect(() => {
-  //   return connectChatSocket(chatRoomId, (e) => {
-  //     if (e.event === "message.new") {
-  //       setMessages((prev) => prependMessage(prev, e.data));   // 상대가 보낸 새 메시지
-  //       scrollToBottom.current = true;                         // (보던 자리가 맨 아래일 때만 내리는 게 좋음)
-  //       void markAsRead(chatRoomId, e.data.messageId).then(() => markRead(chatRoomId));
-  //     } else if (e.event === "message.read") {
-  //       setMessages((prev) => applyReadReceipt(prev, e.data.lastReadMessageId)); // 내 메시지 읽음 표시
-  //     }
-  //   });
-  // }, [chatRoomId, markRead]);
-  //
-  // connectChatSocket·applyReadReceipt는 이미 있습니다 (@/lib/api, ./chatMessages).
+  // ── 실시간 수신 (WebSocket) ─────────────────────────────────────────────────
+  // 상대의 새 메시지(message.new)와 읽음(message.read)을 받습니다. 화면을 떠나면(Activity로 숨겨져도) effect 정리로 연결을 닫고,
+  // 돌아오면 load()가 최신 대화를 다시 불러온 뒤 새로 연결합니다. 끊기면 connectChatSocket이 알아서 다시 연결하고,
+  // 다시 연결되면 끊긴 동안 온 메시지를 불러와 합칩니다.
+  const ready = status === "ready";
+  useEffect(() => {
+    if (!ready) return;
+
+    /** 보던 자리가 맨 아래 근처일 때만 새 메시지에 맞춰 내립니다 (위쪽 이전 메시지를 보는 중이면 그대로) */
+    const nearBottom = () => {
+      const el = scrollRef.current;
+      return !el || el.scrollHeight - el.scrollTop - el.clientHeight < NEAR_BOTTOM;
+    };
+    const readUpTo = (messageId: number) => {
+      markAsRead(chatRoomId, messageId)
+        .then(() => markRead(chatRoomId))
+        .catch(() => {});
+    };
+
+    return connectChatSocket(
+      chatRoomId,
+      (e) => {
+        if (e.event === "message.new") {
+          const m = e.data;
+          if (nearBottom()) scrollToBottom.current = true;
+          setMessages((prev) => prependMessage(prev, { ...m, isMine: false }));
+          messageSent(chatRoomId, m.content, m.createdAt);
+          readUpTo(m.messageId);
+        } else if (e.event === "message.read") {
+          setMessages((prev) => applyReadReceipt(prev, e.data.lastReadMessageId));
+        }
+      },
+      {
+        onReconnect: () => {
+          const mySeq = seq.current;
+          getMessages(chatRoomId, { size: PAGE_SIZE })
+            .then((page) => {
+              if (mySeq !== seq.current) return;
+              if (nearBottom()) scrollToBottom.current = true;
+              setMessages((prev) => mergeLatest(prev, page.items));
+              const newest = page.items[0];
+              if (newest && !newest.isMine) readUpTo(newest.messageId);
+            })
+            .catch(() => {});
+        },
+      },
+    );
+  }, [ready, chatRoomId, markRead, messageSent]);
   // ───────────────────────────────────────────────────────────────────────────
 
   const loadOlder = useCallback(async () => {

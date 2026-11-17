@@ -129,7 +129,7 @@ frontend/
 | `/recruits` | 모집 글 목록 + 상세·작성·수정 다이얼로그 | `GET /posts`, `GET /posts/{id}`, `POST /posts`, `PATCH`·`DELETE /posts/{id}`, `POST /posts/{id}/applications`, `GET /keywords` |
 | `/requests` | 받은 요청 · 보낸 요청 + 거절 사유 다이얼로그 | `GET /requests/received`, `GET /requests/sent`, `PATCH /requests/{type}/{id}/accept`, `PATCH /requests/{type}/{id}/reject` |
 | `/chats` | 채팅 목록 | `GET /chatrooms` |
-| `/chats/{chatRoomId}` | 1:1 채팅 | `GET /chatrooms/{id}`, `GET .../messages`, `POST .../messages`, `PATCH .../read` (**WebSocket 아직 연결 안 함**) |
+| `/chats/{chatRoomId}` | 1:1 채팅 | `GET /chatrooms/{id}`, `GET .../messages`, `POST .../messages`, `PATCH .../read`, WebSocket `/ws/chatrooms/{id}` (실시간 수신) |
 | `/my` | 마이 (내 프로필, 로그아웃) | `GET /users/me`, `GET /users/me/keywords` |
 | `/my/profile` | 프로필 수정 (PC는 마이 위 다이얼로그) | `PATCH /users/me/profile` |
 | `/my/keywords` | 내 키워드 | `GET /users/me/keywords`, `GET /keywords`, `PUT /users/me/keywords` |
@@ -158,25 +158,13 @@ frontend/
 3. 응답 모양이 다르면 **`src/types/api.ts`를 먼저 고치고**, 그다음 `lib/api`와 `mock`을 고칩니다. 화면 모양이나 문구를 바꿔야 하면 디자인 담당에게 알려 주세요.
 4. 날짜는 `2026-10-05T10:00:00`처럼 타임존 없는 서울 시간으로 온다고 가정했습니다 (`lib/datetime.ts`). 실제 서버도 같은지 확인해 주세요.
 
-### 4-2. 채팅 실시간 수신 (WebSocket)
+### 4-2. 채팅 실시간 수신 (WebSocket) — 완료
 
-연결 함수와 화면 쪽 도우미 함수는 이미 있습니다. 화면에 붙이기만 하면 됩니다.
-
-- **붙일 자리:** `src/app/chats/ChatRoom.tsx`의 `// ── 실시간 수신 자리 (WebSocket)` 주석 (99번째 줄 근처). 주석 안에 예시 코드가 있습니다.
-- **연결 함수:** `connectChatSocket(chatRoomId, onEvent, handlers?)` (`src/lib/api/chat.ts`)
-  - 주소: `{NEXT_PUBLIC_API_URL의 ws 버전}/ws/chatrooms/{chatRoomId}?token={accessToken}`
-  - 돌려받은 함수를 `useEffect` 정리 함수로 반환하면 연결이 닫힙니다.
-  - 가짜 모드에서도 동작하므로 백엔드 없이 먼저 붙여 볼 수 있습니다.
-- **이벤트 처리:** `src/app/chats/chatMessages.ts`
-  - `message.new` → `prependMessage`로 메시지를 추가하고, `markAsRead`로 읽음 처리한 뒤, 채팅 목록의 `markRead`를 부릅니다.
-  - `message.read` → `applyReadReceipt`로 내 메시지를 "읽음"으로 바꿉니다.
-- **확인할 것:**
-  - 백엔드의 실제 WebSocket 주소와 토큰 전달 방식이 위와 같은지 확인합니다. 다르면 `connectChatSocket`만 고칩니다.
-  - 토큰이 만료돼 연결이 끊겼을 때 다시 연결할지 정해 주세요. 지금은 재연결 코드가 없습니다.
-  - 새 메시지가 오면 맨 아래로 스크롤할지 정해 주세요. 위쪽 이전 메시지를 보고 있을 때는 내리지 않는 편이 좋습니다.
-  - 연결은 방마다 따로 열리기 때문에, 열려 있지 않은 방의 새 메시지는 **채팅 목록**에 실시간으로 반영되지 않습니다. 지금처럼 목록 화면에 들어올 때 다시 불러오는 방식을 유지할지, 주기적으로 새로 고칠지 정해 주세요.
-- 내용 전체는 `docs/screens.md` 8절 1번에 있습니다.
-- `ChatRoom.tsx`는 디자인 담당도 고치는 파일이라 **작업 전에 서로 알려 주세요** (6절).
+- `src/app/chats/ChatRoom.tsx`가 방에 들어오면 `connectChatSocket`으로 연결하고, 화면을 떠나면 닫습니다.
+  - `message.new`: 메시지 추가 → 읽음 처리(`markAsRead`) → 채팅 목록의 마지막 메시지 갱신. 맨 아래를 보고 있을 때만 따라 내립니다.
+  - `message.read`: 내 메시지를 "읽음"으로 바꿉니다.
+- `src/lib/api/chat.ts`의 `connectChatSocket`은 끊기면 1초부터 최대 30초 간격으로 다시 연결합니다. 다시 연결하기 전에 채팅방 상세 API를 불러 토큰을 재발급하고, `CHAT403`·`CHAT404`·`REFRESH401`이면 멈춥니다. 다시 연결되면 `onReconnect`로 끊긴 동안의 메시지를 불러와 합칩니다(`mergeLatest`).
+- 열려 있지 않은 방의 새 메시지는 지금처럼 채팅 목록에 들어올 때 다시 불러와 반영합니다.
 
 ### 4-3. 배포
 
