@@ -19,6 +19,18 @@ export function appendOlder(list: ChatMessage[], older: ChatMessage[]): ChatMess
   return [...list, ...older.filter((m) => !ids.has(m.messageId))];
 }
 
+/**
+ * 다시 연결한 뒤 불러온 최신 페이지(최신이 먼저)를 합칩니다.
+ * 이미 있는 메시지는 서버 값(읽음 여부)으로 바꾸고, 없던 더 새로운 메시지는 맨 앞에 넣습니다.
+ */
+export function mergeLatest(list: ChatMessage[], latest: ChatMessage[]): ChatMessage[] {
+  const byId = new Map(latest.map((m) => [m.messageId, m]));
+  const newestId = list[0]?.messageId ?? 0;
+  const updated = list.map((m) => byId.get(m.messageId) ?? m);
+  const added = latest.filter((m) => m.messageId > newestId);
+  return [...added, ...updated];
+}
+
 /** 실시간 수신 `message.read` 처리용: 내가 보낸 메시지 중 lastReadMessageId 이하를 읽음으로 표시 */
 export function applyReadReceipt(list: ChatMessage[], lastReadMessageId: number): ChatMessage[] {
   return list.map((m) => (m.isMine && !m.isRead && m.messageId <= lastReadMessageId ? { ...m, isRead: true } : m));
